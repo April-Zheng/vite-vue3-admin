@@ -3,21 +3,38 @@ import type { RouteRecordRaw } from 'vue-router'
 import lazyComponent from './helper'
 import Layout from '@/layout/index.vue'
 
-const routes: RouteRecordRaw[] = [
+export const constantRoutes: RouteRecordRaw[] = [
   {
     path: '/',
     component: Layout,
+    redirect: '/dashboard',
+    meta: {
+      icon: 'House',
+      title: '工作台',
+    },
     children: [
       {
-        path: '/',
-        component: lazyComponent('HelloWorld/index.vue'),
+        path: '/dashboard',
+        component: lazyComponent('dashboard/index.vue'),
+        meta: { hidden: true },
       },
     ],
   },
+]
+
+export const routes: RouteRecordRaw[] = [
+  ...constantRoutes,
   {
     path: '/login',
     name: 'login',
-    component: lazyComponent('Login/index.vue'),
+    component: lazyComponent('login/index.vue'),
+    meta: { hidden: true },
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: '404',
+    component: lazyComponent('404/index.vue'),
+    meta: { hidden: true },
   },
 ]
 

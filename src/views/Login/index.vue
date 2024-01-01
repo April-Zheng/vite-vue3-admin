@@ -2,15 +2,34 @@
   <div class="login-form-wrap">
     <div class="login-form">
       <Title></Title>
-      <el-form label-position="top" ref="loginFormRef" :rules="loginFormRules" :model="loginForm">
+      <el-form
+        label-position="top"
+        ref="loginFormRef"
+        :rules="loginFormRules"
+        :model="loginForm"
+      >
         <el-form-item label="账号名" prop="name" size="large">
-          <el-input v-model="loginForm.name" placeholder="请输入账号名"></el-input>
+          <el-input
+            v-model="loginForm.name"
+            placeholder="请输入账号名"
+          ></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password" size="large">
-          <el-input v-model="loginForm.password" show-password type="password" placeholder="请输入密码"></el-input>
+          <el-input
+            v-model="loginForm.password"
+            show-password
+            type="password"
+            placeholder="请输入密码"
+          ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button size="large" type="primary" :loading="loading" @click="submit(loginFormRef)">登录</el-button>
+          <el-button
+            size="large"
+            type="primary"
+            :loading="loading"
+            @click="submit(loginFormRef)"
+            >登录</el-button
+          >
         </el-form-item>
       </el-form>
     </div>
@@ -18,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import Title from '@/layout/components/Header/Title.vue'
+import Title from './Title.vue'
 import type { FormInstance } from 'element-plus'
 import { ref, reactive } from 'vue'
 import { login } from '@/api/user.ts'
@@ -56,9 +75,10 @@ const submit = (formEl: FormInstance | null) => {
           userStore.setToken(resp?.data.token)
           if (!$route.query?.redirect) {
             $router.push('/')
-
           } else {
-            const redirect = decodeURIComponent($route.query?.redirect as string)
+            const redirect = decodeURIComponent(
+              $route.query?.redirect as string
+            )
             if (redirect?.startsWith('http')) {
               location.href = redirect
             } else {
