@@ -7,12 +7,12 @@
 </template>
 
 <script setup lang="ts">
-import { ProTable } from '@/components'
+import { ITableColumn, ProTable } from '@/components'
 import { getTableList } from '@/api/components'
-import { readonly } from 'vue'
+import { ref } from 'vue'
 
-const columns = readonly([
-  { type: 'selection' },
+const columns = ref<ITableColumn[]>([
+  { type: 'selection' } as ITableColumn,
   {
     prop: 'inspectionId',
     label: '工单ID',
@@ -70,7 +70,7 @@ const columns = readonly([
   },
 ])
 
-const request = async (params, cb) => {
+const request = async (params: any, cb: (v: any) => void) => {
   const resp = await getTableList(params)
   cb?.(resp)
 }

@@ -48,10 +48,10 @@ const fetchList = () => userManage.fetchUserList(params.value)
 
 const addUser = () => router.push('/system/users/add')
 
-const handleSizeChange = (pageSize) => {
+const handleSizeChange = (pageSize: number) => {
   userManage.setParams({ ...params.value, pageSize })
 }
-const handleCurrentChange = (page) => {
+const handleCurrentChange = (page: number) => {
   userManage.setParams({ ...params.value, page })
 }
 

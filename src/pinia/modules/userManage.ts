@@ -14,7 +14,7 @@ export const useUserManage = defineStore('userManage', {
   },
 
   actions: {
-    async fetchUserList(params) {
+    async fetchUserList(params: any) {
       const resp = await getUserList(params)
       if (resp.code === 200) {
         this.list = resp.data.list
@@ -22,7 +22,7 @@ export const useUserManage = defineStore('userManage', {
       }
     },
 
-    setParams(params) {
+    setParams(params: any) {
       this.params = params
       this.fetchUserList(params)
     },

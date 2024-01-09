@@ -19,7 +19,7 @@
 import { useRouter } from 'vue-router'
 import { ErrorType, types } from './type'
 
-defineProps<{ type: keyof ErrorType }>()
+defineProps<{ type: ErrorType }>()
 
 const router = useRouter()
 

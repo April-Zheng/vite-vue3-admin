@@ -31,6 +31,7 @@
 
 <script setup lang="ts">
 import { QueryFilter } from '@/components'
+import { IField } from '@/components/ProForm/type'
 import { reactive } from 'vue'
 
 let fields = reactive([
@@ -79,12 +80,12 @@ let fields = reactive([
       format: 'YYYY-MM-DD HH:mm:ss',
     },
   },
-])
+]) as IField[]
 
-const onSubmit = (values) => {
+const onSubmit = (values: any) => {
   console.log('QueryFilter=====onSubmit===>', values)
 }
-const onCollapseChange = (v) => {
+const onCollapseChange = (v: boolean) => {
   console.log('onCollapseChange==>', v)
 }
 </script>

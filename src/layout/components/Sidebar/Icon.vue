@@ -17,7 +17,7 @@ const {
   appContext: {
     config: { globalProperties },
   },
-} = getCurrentInstance()
+} = getCurrentInstance() || { appContext: { config: {} } }
 
 const transformIcon = (value: string) => {
   if (value.startsWith('http')) {

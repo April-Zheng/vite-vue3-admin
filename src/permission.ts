@@ -1,5 +1,6 @@
 import router from '@/router'
 import { useUser } from '@/pinia/modules'
+import { RouteRecordRaw } from 'vue-router'
 
 /**
  * @see https://router.vuejs.org/zh/guide/advanced/navigation-guards.html
@@ -13,7 +14,7 @@ const WhiteList = ['login']
 
 router.beforeEach(async (to) => {
   const userStore = useUser()
-  if (WhiteList.includes(to.name)) {
+  if (WhiteList.includes(to?.name as string)) {
     return true
   }
   if (!userStore.token) {
@@ -22,7 +23,7 @@ router.beforeEach(async (to) => {
     if (!userStore.userInfo) {
       const { accessRoutes } = await userStore.fetchUserInfo()
       if (accessRoutes?.length) {
-        accessRoutes.forEach((route) => router.addRoute(route))
+        accessRoutes.forEach((route: RouteRecordRaw) => router.addRoute(route))
       }
       // 解决页面刷新404问题
       return to.fullPath

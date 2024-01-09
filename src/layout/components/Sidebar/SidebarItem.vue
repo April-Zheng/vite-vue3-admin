@@ -28,8 +28,9 @@ import Icon from './Icon.vue'
 
 const props = defineProps<{ menu: IMenuItem }>()
 
-const childMenus: IMenuItem[] = computed(() =>
-  props.menu?.children?.filter((item: IMenuItem) => !item?.meta?.hidden)
+const childMenus = computed<IMenuItem[]>(
+  () =>
+    props.menu?.children?.filter((item: IMenuItem) => !item?.meta?.hidden) || []
 )
 
 const router = useRouter()

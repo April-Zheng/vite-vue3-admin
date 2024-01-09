@@ -14,7 +14,9 @@
     <el-tab-pane label="ProForm自定义表单按钮" name="2">
       <pro-form label-width="150px" :rules="rules" :fields="fields">
         <template #submitter="{ formValues, formRef }">
-          <el-button type="primary" @click="formBtnAction(formValues, formRef)"
+          <el-button
+            type="primary"
+            @click="formBtnAction(formValues, formRef as FormInstance)"
             >自定义按钮</el-button
           >
         </template>
@@ -28,10 +30,12 @@ import { ProForm } from '@/components'
 import CustomComponet from './customComponet.vue'
 import { getTableList, getFormDetail } from '@/api/components'
 import { ref, reactive, onMounted, readonly, shallowRef } from 'vue'
+import { IField } from '@/components/ProForm/type'
+import { FormInstance } from 'element-plus'
 
 let activeTab = ref('1')
 
-let fields = reactive([
+let fields = reactive<IField[]>([
   {
     label: 'Activity name',
     prop: 'name',
@@ -172,13 +176,13 @@ const rules = readonly({
   ],
 })
 
-const onChangeTab = (tab) => (activeTab.value = tab)
+const onChangeTab = (tab: string) => (activeTab.value = tab)
 
-const formBtnAction = (values, instance) => {
+const formBtnAction = (values: any, instance: FormInstance | null) => {
   console.log(values, instance)
 }
 
-const onSubmit = (values) => {
+const onSubmit = (values: any) => {
   console.log('onSubmit===>', values)
 }
 
@@ -187,8 +191,8 @@ const fetchList = async () => {
   const resp = await getTableList({})
   if (resp.code === 200) {
     fields = fields.map((item) => {
-      if (item.prop === 'inspectionId') {
-        item.fieldProps.options = resp?.data?.list?.map((item) => ({
+      if (item.prop === 'inspectionId' && item.fieldProps) {
+        item.fieldProps.options = resp?.data?.list?.map((item: any) => ({
           label: item.customerName,
           value: item.inspectionId,
         }))
@@ -198,7 +202,7 @@ const fetchList = async () => {
   }
 }
 
-const fetchFormDetail = async (cb) => {
+const fetchFormDetail = async (cb: (data: any) => void) => {
   const resp = await getFormDetail()
   if (resp.code === 200) {
     cb(resp.data)

@@ -19,7 +19,9 @@ export const getUserInfo = (): IPromiseResp<IUserInfo> => {
   })
 }
 
-export const getUserList = (data) => {
+export const getUserList = (
+  data: Record<string, any>
+): IPromiseResp<Record<string, any>> => {
   return httpRequest({
     url: '/api/user/list',
     method: 'post',

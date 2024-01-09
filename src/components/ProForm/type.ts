@@ -5,16 +5,21 @@ import {
   FormItemProps,
   FormProps,
 } from 'element-plus'
-import { CSSProperties, VueElement } from 'vue'
+import { CSSProperties } from 'vue'
 
-export interface IField extends FormItemProps {
-  component?: VueElement
-  type: keyof typeof FieldType | string
+export type ColSizeProps = { span: ColProps['span'] } & Partial<
+  Omit<ColProps, 'span'>
+>
+
+export interface IField extends Partial<Omit<FormItemProps, 'prop'>> {
+  component?: any
+  type?: keyof typeof FieldType | string
   fieldProps?: Record<string, any>
   prop: string
-  colSize?: ColProps
+  colSize?: ColSizeProps
   // 给查询表单的折叠展开用
   hidden?: boolean
+  [x: string]: any
 }
 
 export interface IFormSubmitter {
@@ -31,19 +36,23 @@ export interface IFormProps<T = Record<string, any>> {
   config?: Omit<FormProps, 'model'>
   // submitter 传入false时 不渲染表单底部按钮
   submitter?: IFormSubmitter | false
-  colSize?: ColProps
-  submitterColSize?: ColProps
+  colSize?: ColSizeProps
+  submitterColSize?: ColSizeProps
   submitterStyle?: CSSProperties
 }
 
-export interface IFormEmits {
+export interface IFormAction {
   (e: 'submit', params: any): void
   (e: 'reset'): void
+}
+
+export interface IFormEmits extends IFormAction {
   // 获取表单初始值
   (e: 'request', cb: (resp: any) => any): void
 }
 
-export interface IFormExpose<T> extends FormInstance {
+export interface IFormExpose<T extends Record<string, any>>
+  extends FormInstance {
   onSubmit: () => void
   onReset: () => void
   formValues: T

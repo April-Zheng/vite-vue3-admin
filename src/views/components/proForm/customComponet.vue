@@ -4,14 +4,14 @@
       <el-input
         placeholder="firstName"
         v-model="value.firstName"
-        @change="(val) => onChange(val, 'firstName')"
+        @change="(val:string) => onChange(val, 'firstName')"
       ></el-input>
     </el-col>
     <el-col :span="12">
       <el-input
         placeholder="secondName"
         v-model="value.secondName"
-        @change="(val) => onChange(val, 'secondName')"
+        @change="(val:string) => onChange(val, 'secondName')"
       ></el-input>
     </el-col>
   </el-row>
@@ -26,6 +26,7 @@ interface IProps extends ICustomComponentBaseProps {
 
 const props = withDefaults(defineProps<IProps>(), {
   modelValue: {
+    // @ts-ignore
     firstName: '',
     secondName: '',
   },
@@ -34,7 +35,7 @@ const emit = defineEmits(['update:modelValue'])
 
 const value = ref(props.modelValue)
 
-const onChange = (val, key) => {
+const onChange = (val: string, key: string) => {
   value.value = {
     ...(props.modelValue || {}),
     [key]: val,

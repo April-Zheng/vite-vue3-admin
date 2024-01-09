@@ -35,7 +35,10 @@ const generateRoutes = (menus: IMenuItem[], parent?: IMenuItem) => {
     }
     if (menu.meta?.hidden) {
       // 如果是隐藏菜单，左侧菜单的高亮元素就应该是它的父亲
-      route.meta.activeKey = parent?.redirect || parent?.path
+      route.meta = {
+        ...route.meta,
+        activeKey: parent?.redirect || parent?.path,
+      }
     }
     routes.push(route)
   })
@@ -72,7 +75,21 @@ export interface IUserStoreState {
   isCollapse: boolean
 }
 
-export const useUser = defineStore<string, IUserStoreState>('user', {
+export interface IUserStoreAction {
+  setToken: (token: string) => void
+  clearToken: () => void
+  fetchUserInfo: () => Promise<
+    Pick<IUserStoreState, 'userInfo' | 'accessRoutes'>
+  >
+  changeCollapse: (v: boolean) => void
+}
+
+export const useUser = defineStore<
+  string,
+  IUserStoreState,
+  {},
+  IUserStoreAction
+>('user', {
   state: () => {
     return {
       token: Cookie.getItem('token'),

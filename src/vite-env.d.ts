@@ -11,3 +11,5 @@ declare module '*.vue' {
 }
 
 declare module '*.svg'
+declare module 'element-plus/dist/locale/zh-cn.mjs'
+declare module 'element-plus/dist/locale/en.mjs'

@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import { ProForm, ProFormSubmitter } from '@/components'
 import Icon from '@/layout/components/Sidebar/Icon.vue'
-import { IFormProps, IFormEmits, IFormExpose } from '../ProForm/type'
+import { IFormProps, IFormAction, IFormExpose } from '../ProForm/type'
 import { withDefaults, computed, ref } from 'vue'
 
 interface IQueryFilterProps extends IFormProps {
@@ -43,11 +43,12 @@ interface IQueryFilterProps extends IFormProps {
   defalutCollapsed?: boolean
 }
 
-interface IQueryFilterEmits extends Omit<IFormEmits, 'request'> {
+interface IQueryFilterEmits extends IFormAction {
   (e: 'onCollapseChange', v: boolean): void
 }
 
 const props = withDefaults(defineProps<IQueryFilterProps>(), {
+  // @ts-ignore
   colSize: { span: 8 },
   defalutCollapsed: true,
 })

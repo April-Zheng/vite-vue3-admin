@@ -68,7 +68,7 @@
   </el-form>
 </template>
 
-<script setup lang="ts" generic="T=Record<string,any>">
+<script setup lang="ts" generic="T extends Record<string,any>">
 import { defineProps, ref, onMounted } from 'vue'
 import type { FormInstance } from 'element-plus'
 import FormItem from './FormItem.vue'
@@ -78,6 +78,7 @@ import { IFormProps, IFormEmits, IFormExpose } from './type'
 //TODO: row的gutter和col的hidden属性冲突了，设置gutter，hidden就不生效
 
 const props = withDefaults(defineProps<IFormProps<T>>(), {
+  // @ts-ignore
   colSize: { span: 24 },
 })
 
@@ -125,6 +126,7 @@ onMounted(() => {
 defineExpose<IFormExpose<T>>({
   onSubmit,
   onReset,
+  // @ts-ignore
   formValues: formValues.value,
   ...(formRef.value || {}),
 })

@@ -29,7 +29,7 @@ defineProps<{ menus: IMenuItem[]; isCollapse: boolean }>()
 const route = useRoute()
 
 const activeMenu = computed(() => {
-  const defaultActive = route?.redirect || route?.path
+  const defaultActive = route?.path
   return route?.meta?.hidden ? route?.meta?.activeKey : defaultActive
 })
 </script>

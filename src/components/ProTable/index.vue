@@ -8,7 +8,9 @@
   <el-table v-loading="loading" :data="tableData">
     <template v-for="column in columns">
       <el-table-column v-bind="column" v-if="column.slot">
-        <slot :name="column.slot" :column="column"></slot>
+        <template #default="scope">
+          <slot :name="column.slot" :row="scope.row" :column="column"></slot>
+        </template>
       </el-table-column>
       <component
         v-else-if="column.component"
@@ -41,14 +43,14 @@ import { watch, ref, onMounted, computed } from 'vue'
 import QueryFilter from '../QueryFilter/index.vue'
 import { IField } from '../ProForm/type'
 
-interface ITableColumn extends IField {
+export interface ITableColumn extends Partial<IField> {
   prop: string
   label: string
   hideInSearch?: boolean
   [x: string]: any
 }
 
-interface IPageConfig {
+export interface IPageConfig {
   background: boolean
   pageSizes: number[]
   layout: string
@@ -63,6 +65,7 @@ const props = withDefaults(
   {
     searchable: true,
     pageConfig: {
+      // @ts-ignore
       background: true,
       pageSizes: [10, 20, 50, 100],
       layout: 'total, sizes, prev, pager, next, jumper',
@@ -86,7 +89,9 @@ const initialParams = props.pageConfig
 let params = ref<Record<string, any>>(initialParams)
 
 const fields = computed(() => {
-  return props.columns.filter((item) => !item.hideInSearch && item.prop)
+  return props.columns.filter(
+    (item) => !item.hideInSearch && item.prop
+  ) as IField[]
 })
 
 const fetchList = async () => {
@@ -96,6 +101,7 @@ const fetchList = async () => {
     params.value,
     (resp: IResponse<{ list: T[]; total: number }>) => {
       if (resp.code === 200) {
+        // @ts-ignore
         tableData.value = resp.data?.list || []
         total.value = resp?.data?.total
         loading.value = false
