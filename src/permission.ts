@@ -17,7 +17,7 @@ const WhiteList = ['login']
 
 router.beforeEach(async (to) => {
   const userStore = useUser()
-  loadingInstance = ElLoading.service({ text: '加载中' })
+  loadingInstance = ElLoading.service()
   if (WhiteList.includes(to?.name as string)) {
     return true
   }

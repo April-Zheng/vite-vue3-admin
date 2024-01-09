@@ -12,7 +12,9 @@
           <router-view :key="$route.path" v-slot="{ Component, route }">
             <transition mode="out-in" name="fade-transform">
               <el-scrollbar>
-                <component :is="Component" :key="route.path" />
+                <error-boundary>
+                  <component :is="Component" :key="route.path" />
+                </error-boundary>
               </el-scrollbar>
             </transition>
           </router-view>
@@ -29,6 +31,7 @@ import { storeToRefs } from 'pinia'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import en from 'element-plus/dist/locale/en.mjs'
 import { ref, computed } from 'vue'
+import ErrorBoundary from '../components/ErrorBoundary/index.vue'
 
 const language = ref('zh-cn')
 const locale = computed(() => (language.value === 'zh-cn' ? zhCn : en))

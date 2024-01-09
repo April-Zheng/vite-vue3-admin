@@ -2,9 +2,16 @@ export const enum ErrorType {
   NoPermission = 403,
   NotFound = 404,
   ServiceError = 500,
+  PageError = 'Error',
 }
 
-export const types = {
+export interface IErrorInfo {
+  img: string
+  title: string
+  desc: string
+}
+
+export const types: Record<ErrorType, IErrorInfo> = {
   [ErrorType.NoPermission]: {
     img: 'https://gw.alipayobjects.com/zos/rmsportal/wZcnGqRDyhPOEYFcZDnb.svg',
     title: '403',
@@ -18,6 +25,11 @@ export const types = {
   [ErrorType.ServiceError]: {
     img: 'https://gw.alipayobjects.com/zos/rmsportal/RVRUAYdCGeYNBWoKiIwB.svg',
     title: '500',
+    desc: '抱歉，服务器出错了',
+  },
+  [ErrorType.PageError]: {
+    img: 'https://gw.alipayobjects.com/zos/rmsportal/RVRUAYdCGeYNBWoKiIwB.svg',
+    title: 'error',
     desc: '抱歉，服务器出错了',
   },
 }

@@ -43,6 +43,7 @@ declare module 'vue' {
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
     ElTabs: typeof import('element-plus/es')['ElTabs']
+    ErrorBoundary: typeof import('./src/components/ErrorBoundary/index.vue')['default']
     ErrorPage: typeof import('./src/components/ErrorPage/index.vue')['default']
     Field: typeof import('./src/components/ProForm/Field.vue')['default']
     FormItem: typeof import('./src/components/ProForm/FormItem.vue')['default']

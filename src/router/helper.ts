@@ -8,8 +8,14 @@ const components: Record<string, () => Promise<AsyncComponentLoader>> =
   import.meta.glob(['../views/*/*.vue', '../views/*/**/*.vue'])
 
 const getComponentPath = (path: string) => {
+  const defaultFilePath = '/index.vue'
+
   const pt = path?.startsWith('/') ? path.slice(1) : path
-  return `../views/${pt}/index.vue`
+  let paths = ['../views/', pt]
+  if (!pt?.endsWith(defaultFilePath)) {
+    paths = [...paths, defaultFilePath]
+  }
+  return paths.join('')
 }
 
 // 是否是路由组件
