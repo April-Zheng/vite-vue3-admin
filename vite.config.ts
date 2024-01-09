@@ -5,9 +5,11 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import { viteMockServe } from 'vite-plugin-mock'
 import path from 'path'
+const pkg = require('./package.json')
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: `/${pkg.name}`,
   build: {
     outDir: 'docs',
   },
