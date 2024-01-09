@@ -25,192 +25,209 @@
   </el-tabs>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import { ProForm } from '@/components'
 import CustomComponet from './customComponet.vue'
 import { getTableList, getFormDetail } from '@/api/components'
-import { ref, reactive, onMounted, readonly, shallowRef } from 'vue'
+import { ref, reactive, readonly, shallowRef } from 'vue'
 import { IField } from '@/components/ProForm/type'
 import { FormInstance } from 'element-plus'
 
-let activeTab = ref('1')
+export default {
+  setup() {
+    let activeTab = ref('1')
 
-let fields = reactive<IField[]>([
-  {
-    label: 'Activity name',
-    prop: 'name',
-    type: 'input',
-    required: true,
-    span: 8,
-  },
-  {
-    label: 'InspectionId',
-    prop: 'inspectionId',
-    type: 'select',
-    fieldProps: {
-      options: [],
-    },
-    span: 8,
-  },
-  {
-    label: 'Activity type',
-    prop: 'type',
-    type: 'checkbox',
-    fieldProps: {
-      options: [
-        {
-          label: 'Online activities',
-          value: '1',
+    let fields = reactive<IField[]>([
+      {
+        label: 'Activity name',
+        prop: 'name',
+        type: 'input',
+        required: true,
+        span: 8,
+      },
+      {
+        label: 'InspectionId',
+        prop: 'inspectionId',
+        type: 'select',
+        fieldProps: {
+          options: [],
         },
-        {
-          label: 'Promotion activities',
-          value: '2',
+        span: 8,
+      },
+      {
+        label: 'Activity type',
+        prop: 'type',
+        type: 'checkbox',
+        fieldProps: {
+          options: [
+            {
+              label: 'Online activities',
+              value: '1',
+            },
+            {
+              label: 'Promotion activities',
+              value: '2',
+            },
+            {
+              label: 'Offline activities',
+              value: '3',
+            },
+            {
+              label: 'Simple brand exposure',
+              value: '4',
+            },
+          ],
         },
-        {
-          label: 'Offline activities',
-          value: '3',
+      },
+      {
+        label: 'Resources',
+        prop: 'resource',
+        type: 'radio',
+        fieldProps: {
+          options: [
+            {
+              label: 'Sponsor',
+              value: '1',
+            },
+            {
+              label: 'Venue',
+              value: '2',
+            },
+          ],
         },
+      },
+      {
+        label: 'Date',
+        prop: 'date',
+        type: 'datePicker',
+        fieldProps: {
+          type: 'date',
+          clearable: true,
+        },
+      },
+      {
+        label: 'Date Time',
+        prop: 'dateTime',
+        type: 'datePicker',
+        fieldProps: {
+          type: 'datetime',
+          clearable: true,
+          format: 'YYYY-MM-DD HH:mm:ss',
+        },
+      },
+      {
+        label: 'Desc',
+        prop: 'desc',
+        type: 'input',
+        fieldProps: {
+          type: 'textarea',
+        },
+      },
+      {
+        label: 'custom component',
+        prop: 'custom',
+        component: shallowRef(CustomComponet),
+      },
+    ])
+
+    const rules = readonly({
+      name: [
         {
-          label: 'Simple brand exposure',
-          value: '4',
+          required: true,
+          message: 'Please input Activity name',
+          trigger: 'blur',
+        },
+        { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
+      ],
+      count: [
+        {
+          required: true,
+          message: 'Please select Activity count',
+          trigger: 'change',
         },
       ],
-    },
-  },
-  {
-    label: 'Resources',
-    prop: 'resource',
-    type: 'radio',
-    fieldProps: {
-      options: [
+      date: [
         {
-          label: 'Sponsor',
-          value: '1',
-        },
-        {
-          label: 'Venue',
-          value: '2',
+          type: 'date',
+          required: true,
+          message: 'Please pick a date',
+          trigger: 'change',
         },
       ],
-    },
-  },
-  {
-    label: 'Date',
-    prop: 'date',
-    type: 'datePicker',
-    fieldProps: {
-      type: 'date',
-      clearable: true,
-    },
-  },
-  {
-    label: 'Date Time',
-    prop: 'dateTime',
-    type: 'datePicker',
-    fieldProps: {
-      type: 'datetime',
-      clearable: true,
-      format: 'YYYY-MM-DD HH:mm:ss',
-    },
-  },
-  {
-    label: 'Desc',
-    prop: 'desc',
-    type: 'input',
-    fieldProps: {
-      type: 'textarea',
-    },
-  },
-  {
-    label: 'custom component',
-    prop: 'custom',
-    component: shallowRef(CustomComponet),
-  },
-])
-
-const rules = readonly({
-  name: [
-    { required: true, message: 'Please input Activity name', trigger: 'blur' },
-    { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
-  ],
-  count: [
-    {
-      required: true,
-      message: 'Please select Activity count',
-      trigger: 'change',
-    },
-  ],
-  date: [
-    {
-      type: 'date',
-      required: true,
-      message: 'Please pick a date',
-      trigger: 'change',
-    },
-  ],
-  dateTime: [
-    {
-      type: 'date',
-      required: true,
-      message: 'Please pick a time',
-      trigger: 'change',
-    },
-  ],
-  type: [
-    {
-      type: 'array',
-      required: true,
-      message: 'Please select at least one activity type',
-      trigger: 'change',
-    },
-  ],
-  resource: [
-    {
-      required: true,
-      message: 'Please select activity resource',
-      trigger: 'change',
-    },
-  ],
-  desc: [
-    { required: true, message: 'Please input activity form', trigger: 'blur' },
-  ],
-})
-
-const onChangeTab = (tab: string) => (activeTab.value = tab)
-
-const formBtnAction = (values: any, instance: FormInstance | null) => {
-  console.log(values, instance)
-}
-
-const onSubmit = (values: any) => {
-  console.log('onSubmit===>', values)
-}
-
-// 动态请求select数据
-const fetchList = async () => {
-  const resp = await getTableList({})
-  if (resp.code === 200) {
-    fields = fields.map((item) => {
-      if (item.prop === 'inspectionId' && item.fieldProps) {
-        item.fieldProps.options = resp?.data?.list?.map((item: any) => ({
-          label: item.customerName,
-          value: item.inspectionId,
-        }))
-      }
-      return item
+      dateTime: [
+        {
+          type: 'date',
+          required: true,
+          message: 'Please pick a time',
+          trigger: 'change',
+        },
+      ],
+      type: [
+        {
+          type: 'array',
+          required: true,
+          message: 'Please select at least one activity type',
+          trigger: 'change',
+        },
+      ],
+      resource: [
+        {
+          required: true,
+          message: 'Please select activity resource',
+          trigger: 'change',
+        },
+      ],
+      desc: [
+        {
+          required: true,
+          message: 'Please input activity form',
+          trigger: 'blur',
+        },
+      ],
     })
-  }
-}
 
-const fetchFormDetail = async (cb: (data: any) => void) => {
-  const resp = await getFormDetail()
-  if (resp.code === 200) {
-    cb(resp.data)
-  }
-}
+    return { fields, rules, activeTab }
+  },
 
-onMounted(() => {
-  fetchList()
-})
+  methods: {
+    onChangeTab(tab: string) {
+      this.activeTab = tab
+    },
+
+    formBtnAction(values: any, instance: FormInstance | null) {
+      console.log(values, instance)
+    },
+
+    onSubmit(values: any) {
+      console.log('onSubmit===>', values)
+    },
+
+    // 动态请求select数据
+    async fetchList() {
+      const resp = await getTableList({})
+      if (resp.code === 200) {
+        this.fields = this.fields.map((item) => {
+          if (item.prop === 'inspectionId' && item.fieldProps) {
+            item.fieldProps.options = resp?.data?.list?.map((item: any) => ({
+              label: item.customerName,
+              value: item.inspectionId,
+            }))
+          }
+          return item
+        })
+      }
+    },
+
+    async fetchFormDetail(cb: (data: any) => void) {
+      const resp = await getFormDetail()
+      if (resp.code === 200) {
+        cb(resp.data)
+      }
+    },
+  },
+  mounted() {
+    this.fetchList()
+  },
+}
 </script>
 <style scoped></style>

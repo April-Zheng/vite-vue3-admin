@@ -42,7 +42,7 @@ const handleClick = () => {
 const userManage = useUserManage()
 const router = useRouter()
 
-const { list, total, params } = storeToRefs(userManage)
+const { list = [], total, params } = storeToRefs(userManage)
 
 const fetchList = () => userManage.fetchUserList(params.value)
 

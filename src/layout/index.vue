@@ -9,13 +9,13 @@
           <Header :userInfo="userInfo"></Header>
         </el-header>
         <el-main>
-          <transition mode="out-in" name="fade-transform">
-            <router-view :key="$route.path" v-slot="{ Component, route }">
+          <router-view :key="$route.path" v-slot="{ Component, route }">
+            <transition mode="out-in" name="fade-transform">
               <el-scrollbar>
                 <component :is="Component" :key="route.path" />
               </el-scrollbar>
-            </router-view>
-          </transition>
+            </transition>
+          </router-view>
         </el-main>
       </el-container>
     </el-container>

@@ -17,8 +17,10 @@ app.config.globalProperties.$Icons = ElementPlusIconsVue
 
 app.use(pinia).use(router)
 
-app.config.errorHandler = (err) => {
-  console.error(err)
+app.config.errorHandler = (err, instance) => {
+  console.error(err, instance)
 }
 
 app.mount('#app')
+
+console.log('isDev==>', process.env.NODE_ENV !== 'production')

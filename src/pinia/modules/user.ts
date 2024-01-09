@@ -1,7 +1,7 @@
 import { Cookie } from '@/utils/storage'
 import { defineStore } from 'pinia'
 import { getUserInfo } from '@/api/user'
-import lazyComponent from '@/router/helper'
+import lazyComponent, { isRouteComponent } from '@/router/helper'
 import Layout from '@/layout/index.vue'
 import { RouteRecordRaw } from 'vue-router'
 import type { IMenuItem, IUserInfo } from '@/api/type'
@@ -15,10 +15,12 @@ const generateRoutes = (
   return new Promise((resolve) => {
     const routes: RouteRecordRaw[] = []
     menus.forEach(async (menu) => {
-      const component =
-        menu?.level === 1
-          ? shallowRef(Layout)
-          : lazyComponent(`${menu.path}/index.vue`)
+      const path = `${menu.path}/index.vue`
+      const component = isRouteComponent(path)
+        ? shallowRef(lazyComponent(path))
+        : !parent
+        ? shallowRef(Layout)
+        : null
       const route: RouteRecordRaw = {
         path: menu.path,
         component,
