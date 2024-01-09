@@ -8,6 +8,7 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/vue3-element-admin-template/dist',
   plugins: [
     vue(),
     AutoImport({
@@ -17,8 +18,13 @@ export default defineConfig({
       resolvers: [ElementPlusResolver()],
     }),
     viteMockServe({
-      mockPath: './mock', // mock文件存放的位置
+      mockPath: 'mock', // mock文件存放的位置
       logger: true,
+      prodEnabled: true,
+      injectCode: ` 
+          import { setupProdMockServer } from './mock-prod-server';
+          setupProdMockServer();
+        `,
     }),
   ],
   resolve: {
