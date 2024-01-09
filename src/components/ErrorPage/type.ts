@@ -2,6 +2,7 @@ export const enum ErrorType {
   NoPermission = 403,
   NotFound = 404,
   ServiceError = 500,
+  PageError = 'error',
 }
 
 export const types = {
@@ -19,6 +20,11 @@ export const types = {
     img: 'https://gw.alipayobjects.com/zos/rmsportal/RVRUAYdCGeYNBWoKiIwB.svg',
     title: '500',
     desc: '抱歉，服务器出错了',
+  },
+  [ErrorType.PageError]: {
+    img: 'https://gw.alipayobjects.com/zos/rmsportal/RVRUAYdCGeYNBWoKiIwB.svg',
+    title: 'Error',
+    desc: '抱歉，页面出错了',
   },
 }
 

@@ -4,13 +4,22 @@
  *
  * BUG: 动态导入的原因？？
  * 导致部署到github page 总是报错【Failed to fetch dynamically imported module】
+ *
+ * 加上async await之后前两个路由可以，后续路由还是不行
  */
 
-const components = import.meta.glob(['../views/*/*.vue', '../views/*/**/*.vue'])
+import { AsyncComponentLoader, defineAsyncComponent } from 'vue'
+import ErrorPage from '../components/ErrorPage/index.vue'
 
-const lazyComponent = async (path: string) => {
+const components: Record<string, () => Promise<AsyncComponentLoader>> =
+  import.meta.glob(['../views/*/*.vue', '../views/*/**/*.vue'])
+
+const lazyComponent = (path: string) => {
   const curPath = path?.startsWith('/') ? path.slice(1) : path
-  return await components[`../views/${curPath}`]
+  return defineAsyncComponent({
+    loader: components[`../views/${curPath}`],
+    errorComponent: ErrorPage,
+  })
 }
 
 export default lazyComponent

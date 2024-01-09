@@ -19,7 +19,9 @@
 import { useRouter } from 'vue-router'
 import { ErrorType, types } from './type'
 
-defineProps<{ type: ErrorType }>()
+withDefaults(defineProps<{ type: ErrorType }>(), {
+  type: ErrorType.PageError,
+})
 
 const router = useRouter()
 

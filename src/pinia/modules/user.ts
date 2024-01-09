@@ -18,7 +18,7 @@ const generateRoutes = (
       const component =
         menu?.level === 1
           ? shallowRef(Layout)
-          : await lazyComponent(`${menu.path}/index.vue`)
+          : lazyComponent(`${menu.path}/index.vue`)
       const route: RouteRecordRaw = {
         path: menu.path,
         component,
