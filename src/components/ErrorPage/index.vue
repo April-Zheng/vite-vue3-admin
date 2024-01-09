@@ -20,18 +20,13 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { ErrorType, types } from './type'
+import type { IErrorInfo } from './type'
 
-withDefaults(
-  defineProps<{
-    type: ErrorType
-    desc?: string
-    title?: string
-    img?: string
-  }>(),
+defineProps<
   {
-    type: ErrorType.PageError,
-  }
-)
+    type: ErrorType
+  } & Partial<IErrorInfo>
+>()
 
 const router = useRouter()
 
@@ -48,10 +43,14 @@ const backToHome = () => {
   padding-top: 10%;
   box-sizing: border-box;
   &-img {
-    max-width: 430px;
+    max-width: 320px;
     background-repeat: no-repeat;
     background-position: 50% 50%;
     background-size: contain;
+    img {
+      width: 100%;
+      height: 100%;
+    }
   }
   &-content {
     text-align: center;
@@ -60,8 +59,8 @@ const backToHome = () => {
       margin-bottom: 24px;
       color: #434e59;
       font-weight: 600;
-      font-size: 72px;
-      line-height: 72px;
+      font-size: 68px;
+      line-height: 68px;
       text-align: center;
     }
     .desc {

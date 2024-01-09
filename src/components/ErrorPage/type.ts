@@ -5,7 +5,13 @@ export const enum ErrorType {
   PageError = 'error',
 }
 
-export const types = {
+export interface IErrorInfo {
+  img: string
+  title: string
+  desc: string
+}
+
+export const types: Record<ErrorType, IErrorInfo> = {
   [ErrorType.NoPermission]: {
     img: 'https://gw.alipayobjects.com/zos/rmsportal/wZcnGqRDyhPOEYFcZDnb.svg',
     title: '403',
