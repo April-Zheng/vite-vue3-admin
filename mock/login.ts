@@ -46,7 +46,6 @@ export default [
     statusCode: 200,
     response: (options) => {
       const { headers } = options
-      console.log(options)
       // 响应内容
       return {
         code: 200,

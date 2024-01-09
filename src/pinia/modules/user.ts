@@ -8,7 +8,7 @@ import type { IMenuItem, IUserInfo } from '@/api/type'
 import { shallowRef } from 'vue'
 import { constantRoutes } from '@/router'
 
-const generateRoutes = (menus: IMenuItem[]) => {
+const generateRoutes = (menus: IMenuItem[], parent?: IMenuItem) => {
   const routes: RouteRecordRaw[] = []
   menus.forEach((menu) => {
     const component =
@@ -22,20 +22,20 @@ const generateRoutes = (menus: IMenuItem[]) => {
         title: menu.name,
         icon: menu.icon,
         ...(menu?.meta || {}),
-        activeKeys:
-          menu?.children && menu?.children?.length > 0
-            ? menu?.children?.map((item) => item.path)
-            : [],
       },
       sensitive: true,
       strict: true,
       children:
         menu?.children && menu?.children?.length > 0
-          ? generateRoutes(menu.children)
+          ? generateRoutes(menu.children, menu)
           : [],
     }
     if (menu.redirect) {
       route.redirect = menu.redirect
+    }
+    if (menu.meta?.hidden) {
+      // 如果是隐藏菜单，左侧菜单的高亮元素就应该是它的父亲
+      route.meta.activeKey = parent?.redirect || parent?.path
     }
     routes.push(route)
   })

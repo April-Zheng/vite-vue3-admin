@@ -13,7 +13,6 @@ const WhiteList = ['login']
 
 router.beforeEach(async (to) => {
   const userStore = useUser()
-  console.log('userStore===>', userStore.token)
   if (WhiteList.includes(to.name)) {
     return true
   }

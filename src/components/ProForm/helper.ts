@@ -8,3 +8,16 @@ export const transform2ElCompName = (name: string) => {
   }
   return `el-${result}`
 }
+
+export const omitUndefined = (obj: Record<string, any>) => {
+  const newObj: Record<string, any> = {}
+  Object.keys(obj || {}).forEach((key: string) => {
+    if (obj[key] !== undefined) {
+      newObj[key] = obj[key]
+    }
+  })
+  if (Object.keys(newObj).length < 1) {
+    return undefined as any
+  }
+  return newObj
+}

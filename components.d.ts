@@ -8,13 +8,17 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Components: typeof import('./src/components/index.vue')['default']
+    Content: typeof import('./src/components/ProForm/Content.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
     ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElCard: typeof import('element-plus/es')['ElCard']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
     ElCol: typeof import('element-plus/es')['ElCol']
+    ElCollapse: typeof import('element-plus/es')['ElCollapse']
+    ElCollapseItem: typeof import('element-plus/es')['ElCollapseItem']
     ElConfigProvider: typeof import('element-plus/es')['ElConfigProvider']
     ElContainer: typeof import('element-plus/es')['ElContainer']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
@@ -47,6 +51,7 @@ declare module 'vue' {
     ErrorPage: typeof import('./src/components/ErrorPage/index.vue')['default']
     Field: typeof import('./src/components/ProForm/Field.vue')['default']
     FieldComponent: typeof import('./src/components/ProForm/FieldComponent.vue')['default']
+    FormItem: typeof import('./src/components/ProForm/FormItem.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     IEpSetting: typeof import('~icons/ep/setting')['default']
     IEpUserFilled: typeof import('~icons/ep/user-filled')['default']
@@ -55,6 +60,7 @@ declare module 'vue' {
     QueryFilter: typeof import('./src/components/QueryFilter/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Submitter: typeof import('./src/components/ProForm/Submitter.vue')['default']
   }
   export interface ComponentCustomProperties {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']

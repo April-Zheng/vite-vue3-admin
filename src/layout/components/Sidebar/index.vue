@@ -7,6 +7,7 @@
       text-color="#fff"
       class="side-menus"
       :collapse="isCollapse"
+      :style="{ width: isCollapse ? '64px' : '200px' }"
     >
       <sidebar-item
         v-for="menu in menus"
@@ -29,11 +30,7 @@ const route = useRoute()
 
 const activeMenu = computed(() => {
   const defaultActive = route?.redirect || route?.path
-
-  const res = route.matched?.find((item) =>
-    item.meta?.activeKeys?.includes(route.path)
-  )
-  return res?.redirect || res?.path || defaultActive
+  return route?.meta?.hidden ? route?.meta?.activeKey : defaultActive
 })
 </script>
 <style scoped lang="scss">

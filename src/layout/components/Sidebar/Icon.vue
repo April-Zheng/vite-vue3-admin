@@ -6,9 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, ref } from 'vue'
-import { getCurrentInstance } from 'vue'
-import { computed } from 'vue'
+import { watch, getCurrentInstance, computed } from 'vue'
 
 const props = defineProps<{
   icon: string

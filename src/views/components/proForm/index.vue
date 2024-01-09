@@ -27,8 +27,7 @@
 import { ProForm } from '@/components'
 import CustomComponet from './customComponet.vue'
 import { getTableList, getFormDetail } from '@/api/components'
-import { ref, reactive, toRefs, onMounted, readonly } from 'vue'
-import { shallowRef } from 'vue'
+import { ref, reactive, onMounted, readonly, shallowRef } from 'vue'
 
 let activeTab = ref('1')
 
@@ -38,6 +37,7 @@ let fields = reactive([
     prop: 'name',
     type: 'input',
     required: true,
+    span: 8,
   },
   {
     label: 'InspectionId',
@@ -46,6 +46,7 @@ let fields = reactive([
     fieldProps: {
       options: [],
     },
+    span: 8,
   },
   {
     label: 'Activity type',
@@ -209,4 +210,3 @@ onMounted(() => {
 })
 </script>
 <style scoped></style>
-@/api/components

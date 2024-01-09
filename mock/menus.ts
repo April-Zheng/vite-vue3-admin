@@ -29,6 +29,12 @@ const menus: IMenuItem[] = [
         level: 2,
       },
       {
+        name: '权限管理',
+        path: '/system/permission',
+        icon: '',
+        level: 2,
+      },
+      {
         name: '用户管理',
         path: '/system/users',
         redirect: '/system/users/list',
@@ -73,6 +79,12 @@ const menus: IMenuItem[] = [
       {
         name: 'ProForm表单组件',
         path: '/components/proForm',
+        icon: '',
+        level: 2,
+      },
+      {
+        name: 'QueryFilter查询表单',
+        path: '/components/queryFilter',
         icon: '',
         level: 2,
       },

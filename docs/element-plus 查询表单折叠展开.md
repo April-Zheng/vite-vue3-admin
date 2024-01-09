@@ -1,3 +1,15 @@
+# vue3+vite+element-puls 折叠展开的查询组件封装学习
+
+基于前面封装的 pro-form 做了修改，将 pro-form 修改为表单项使用 row col 包括的，达到一行多个的效果
+defaultColsNumber 配置默认展示多少个，没有配置则默认显示 1 行
+通过设置组件的 hidden 属性来控制显示隐藏，
+but，row 配置了 gutter 之后 col 的 hidden 属性就失效，不知道为啥，解决不了
+
+话不多说，上代码
+
+## 代码实现
+
+```vue
 <template>
   <pro-form
     ref="queryFilterRef"
@@ -138,3 +150,98 @@ const onChangeCollapsed = () => {
 }
 </script>
 <style scoped></style>
+```
+
+## 使用
+
+```vue
+<template>
+  <query-filter
+    label-width="150px"
+    :fields="fields.slice(0, 5)"
+    @submit="onSubmit"
+  >
+  </query-filter>
+  <query-filter
+    label-width="150px"
+    :fields="fields"
+    :default-cols-number="6"
+    @submit="onSubmit"
+  >
+  </query-filter>
+  <query-filter
+    :defalut-collapsed="false"
+    :submitter-col-size="{ span: 12 }"
+    label-width="150px"
+    :fields="fields"
+    @submit="onSubmit"
+    @onCollapseChange="onCollapseChange"
+  >
+  </query-filter>
+</template>
+
+<script setup lang="ts">
+import { QueryFilter } from '@/components'
+import { reactive } from 'vue'
+
+let fields = reactive([
+  {
+    label: '姓名',
+    prop: 'name',
+    type: 'input',
+  },
+  {
+    label: '地址',
+    prop: 'address',
+    type: 'input',
+  },
+  {
+    label: '工作',
+    prop: 'job',
+    type: 'input',
+  },
+  {
+    label: '性别',
+    prop: 'gender',
+    type: 'select',
+    fieldProps: {
+      options: [
+        { label: '男', value: 0 },
+        { label: '女', value: 1 },
+      ],
+    },
+  },
+  {
+    label: '出生日期',
+    prop: 'date',
+    type: 'datePicker',
+    fieldProps: {
+      type: 'date',
+      clearable: true,
+    },
+  },
+  {
+    label: '日期时间',
+    prop: 'dateTime',
+    type: 'datePicker',
+    fieldProps: {
+      type: 'datetime',
+      clearable: true,
+      format: 'YYYY-MM-DD HH:mm:ss',
+    },
+  },
+])
+
+const onSubmit = (values) => {
+  console.log('QueryFilter=====onSubmit===>', values)
+}
+const onCollapseChange = (v) => {
+  console.log('onCollapseChange==>', v)
+}
+</script>
+<style scoped></style>
+```
+
+## 效果
+
+![Alt text](image-1.png)

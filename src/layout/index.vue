@@ -1,7 +1,7 @@
 <template>
   <el-config-provider :locale="locale">
     <el-container>
-      <el-aside :width="isCollapse ? '64px' : '200px'">
+      <el-aside width="max-content">
         <Sidebar :menus="menus" :isCollapse="isCollapse"></Sidebar>
       </el-aside>
       <el-container>
@@ -9,13 +9,13 @@
           <Header :userInfo="userInfo"></Header>
         </el-header>
         <el-main>
-          <el-scrollbar>
+          <transition mode="out-in" name="fade-transform">
             <router-view :key="$route.path" v-slot="{ Component, route }">
-              <transition name="fade">
+              <el-scrollbar>
                 <component :is="Component" :key="route.path" />
-              </transition>
+              </el-scrollbar>
             </router-view>
-          </el-scrollbar>
+          </transition>
         </el-main>
       </el-container>
     </el-container>
