@@ -34,6 +34,6 @@ router.beforeEach(async (to) => {
 
 router.onError((error, to) => {
   if (error.message.includes('Failed to fetch dynamically imported module')) {
-    window.location.href = to.fullPath
+    window.location.href = `${router.options.history.base}${to.fullPath}`
   }
 })
