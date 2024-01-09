@@ -17,10 +17,11 @@ import { ElLoading } from 'element-plus'
 import ErrorBoundary from '../components/ErrorBoundary/index.vue'
 
 const staticComponents: Record<string, () => Promise<any>> = {
-  '/components/proForm': () => import('../views/components/proForm/index.vue'),
-  '/components/proTable': () =>
+  '/components/proForm/index.vue': () =>
+    import('../views/components/proForm/index.vue'),
+  '/components/proTable/index.vue': () =>
     import('../views/components/proTable/index.vue'),
-  '/components/queryFilter': () =>
+  '/components/queryFilter/index.vue': () =>
     import('../views/components/queryFilter/index.vue'),
 }
 
