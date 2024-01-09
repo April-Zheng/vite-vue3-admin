@@ -10,21 +10,25 @@
  * Component "default" in record with path "/system/permission" is defined using "defineAsyncComponent()". Write "() => import('./MyPage.vue')" instead of "defineAsyncComponent(() => import('./MyPage.vue'))".
  *
  * 看到有人说是setup语法糖引起的问题，试试修改为选项式API 也是不行
+ *
+ * 不实用import.meta.glob一样
+ *
+ * 使用import from 顶层引入，突然之间所有的都可以了，难道真的是网络问题？？？
  */
 
 import { AsyncComponentLoader, defineAsyncComponent } from 'vue'
 import { ElLoading } from 'element-plus'
 import ErrorBoundary from '../components/ErrorBoundary/index.vue'
 
-import ProForm from '../views/components/proForm/index.vue'
-import ProTable from '../views/components/proTable/index.vue'
+// import ProForm from '../views/components/proForm/index.vue'
+// import ProTable from '../views/components/proTable/index.vue'
 
-const staticComponents: Record<string, any> = {
-  '/components/proForm/index.vue': ProForm,
-  '/components/proTable/index.vue': ProTable,
-  '/components/queryFilter/index.vue': () =>
-    import('../views/components/queryFilter/index.vue'),
-}
+// const staticComponents: Record<string, any> = {
+//   '/components/proForm/index.vue': ProForm,
+//   '/components/proTable/index.vue': ProTable,
+//   '/components/queryFilter/index.vue': () =>
+//     import('../views/components/queryFilter/index.vue'),
+// }
 
 const components: Record<string, () => Promise<AsyncComponentLoader>> =
   import.meta.glob(['../views/*/*.vue', '../views/*/**/*.vue'])
@@ -36,9 +40,9 @@ export const isRouteComponent = (path: string) =>
   !!components[`../views/${getComponentPath(path)}`]
 
 const lazyComponent = (path: string): AsyncComponentLoader => {
-  if (staticComponents[path]) {
-    return staticComponents[path]
-  }
+  // if (staticComponents[path]) {
+  //   return staticComponents[path]
+  // }
   const curPath = getComponentPath(path)
 
   return defineAsyncComponent({
