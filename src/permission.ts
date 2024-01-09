@@ -18,7 +18,7 @@ router.beforeEach(async (to) => {
     return true
   }
   if (!userStore.token) {
-    return { name: 'login', query: { redirect: to.fullPath } }
+    return { path: '/login', query: { redirect: to.fullPath } }
   } else {
     if (!userStore.userInfo) {
       const { accessRoutes } = await userStore.fetchUserInfo()
