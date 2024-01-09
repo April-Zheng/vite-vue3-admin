@@ -22,5 +22,3 @@ app.config.errorHandler = (err, instance) => {
 }
 
 app.mount('#app')
-
-console.log('isDev==>', process.env.NODE_ENV !== 'production')

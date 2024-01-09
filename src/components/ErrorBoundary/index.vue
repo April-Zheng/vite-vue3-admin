@@ -13,16 +13,22 @@
 import ErrorPage from '../ErrorPage/index.vue'
 import { ErrorType } from '../ErrorPage/type'
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { onErrorCaptured, ref } from 'vue'
 
 const router = useRouter()
 
 let errMsg = ref('')
 
-router.onError((error) => {
+const setErrorMsg = (error: Error) => {
   if (error.message) {
     errMsg.value = error.message
   }
+}
+
+onErrorCaptured((error, instance, info) => {
+  console.error('onErrorCaptured==>', error, instance, info)
+  setErrorMsg(error)
+  return false
 })
 
 const onBack = () => {

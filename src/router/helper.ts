@@ -34,11 +34,14 @@ export const isRouteComponent = (path: string) =>
   !!components[`../views/${getComponentPath(path)}`]
 
 const lazyComponent = (path: string): AsyncComponentLoader => {
+  if (staticComponents[path]) {
+    return staticComponents[path]
+  }
   const curPath = getComponentPath(path)
 
   return defineAsyncComponent({
     loader: components[`../views/${curPath}`],
-    errorComponent: staticComponents[path] || ErrorBoundary,
+    errorComponent: ErrorBoundary,
     loadingComponent: ElLoading,
   })
 
