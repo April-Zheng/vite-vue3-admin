@@ -16,11 +16,12 @@ import { AsyncComponentLoader, defineAsyncComponent } from 'vue'
 import { ElLoading } from 'element-plus'
 import ErrorBoundary from '../components/ErrorBoundary/index.vue'
 
-const staticComponents: Record<string, () => Promise<any>> = {
-  '/components/proForm/index.vue': () =>
-    import('../views/components/proForm/index.vue'),
-  '/components/proTable/index.vue': () =>
-    import('../views/components/proTable/index.vue'),
+import ProForm from '../views/components/proForm/index.vue'
+import ProTable from '../views/components/proTable/index.vue'
+
+const staticComponents: Record<string, any> = {
+  '/components/proForm/index.vue': ProForm,
+  '/components/proTable/index.vue': ProTable,
   '/components/queryFilter/index.vue': () =>
     import('../views/components/queryFilter/index.vue'),
 }
