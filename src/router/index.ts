@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import lazyComponent from './helper'
 import Layout from '@/layout/index.vue'
+import pkg from '../../package.json'
 
 export const constantRoutes: RouteRecordRaw[] = [
   {
@@ -39,7 +40,9 @@ export const routes: RouteRecordRaw[] = [
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHashHistory(
+    process.env.NODE_ENV === 'production' ? pkg.name : '/'
+  ),
   routes: routes,
 })
 

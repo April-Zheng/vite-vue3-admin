@@ -1,6 +1,7 @@
 import router from '@/router'
 import { useUser } from '@/pinia/modules'
 import { RouteRecordRaw } from 'vue-router'
+import { ElLoading } from 'element-plus'
 
 /**
  * @see https://router.vuejs.org/zh/guide/advanced/navigation-guards.html
@@ -10,10 +11,13 @@ import { RouteRecordRaw } from 'vue-router'
  * 2、在路由守卫中动态添加路由
  */
 
+let loadingInstance: any
+
 const WhiteList = ['login']
 
 router.beforeEach(async (to) => {
   const userStore = useUser()
+  loadingInstance = ElLoading.service({ text: '加载中' })
   if (WhiteList.includes(to?.name as string)) {
     return true
   }
@@ -30,4 +34,8 @@ router.beforeEach(async (to) => {
     }
     return true
   }
+})
+
+router.afterEach(() => {
+  loadingInstance?.close()
 })

@@ -1,48 +1,54 @@
 import { Cookie } from '@/utils/storage'
 import { defineStore } from 'pinia'
 import { getUserInfo } from '@/api/user'
-import lazyComponent from '@/router/helper'
+import lazyComponent, { isValidRouteComponent } from '@/router/helper'
 import Layout from '@/layout/index.vue'
 import { RouteRecordRaw } from 'vue-router'
 import type { IMenuItem, IUserInfo } from '@/api/type'
 import { shallowRef } from 'vue'
 import { constantRoutes } from '@/router'
 
-const generateRoutes = (menus: IMenuItem[], parent?: IMenuItem) => {
-  const routes: RouteRecordRaw[] = []
-  menus.forEach((menu) => {
-    const component =
-      menu?.level === 1
+const generateRoutes = (
+  menus: IMenuItem[],
+  parent?: IMenuItem
+): Promise<RouteRecordRaw[]> => {
+  return new Promise((resolve) => {
+    const routes: RouteRecordRaw[] = []
+    menus.forEach(async (menu) => {
+      const component = isValidRouteComponent(menu.path)
+        ? lazyComponent(menu.path)
+        : !parent
         ? shallowRef(Layout)
-        : lazyComponent(`${menu.path}/index.vue`)
-    const route: RouteRecordRaw = {
-      path: menu.path,
-      component,
-      meta: {
-        title: menu.name,
-        icon: menu.icon,
-        ...(menu?.meta || {}),
-      },
-      sensitive: true,
-      strict: true,
-      children:
-        menu?.children && menu?.children?.length > 0
-          ? generateRoutes(menu.children, menu)
-          : [],
-    }
-    if (menu.redirect) {
-      route.redirect = menu.redirect
-    }
-    if (menu.meta?.hidden) {
-      // 如果是隐藏菜单，左侧菜单的高亮元素就应该是它的父亲
-      route.meta = {
-        ...route.meta,
-        activeKey: parent?.redirect || parent?.path,
+        : null
+      const route: RouteRecordRaw = {
+        path: menu.path,
+        component,
+        meta: {
+          title: menu.name,
+          icon: menu.icon,
+          ...(menu?.meta || {}),
+        },
+        sensitive: true,
+        strict: true,
+        children:
+          menu?.children && menu?.children?.length > 0
+            ? await generateRoutes(menu.children, menu)
+            : [],
       }
-    }
-    routes.push(route)
+      if (menu.redirect) {
+        route.redirect = menu.redirect
+      }
+      if (menu.meta?.hidden) {
+        // 如果是隐藏菜单，左侧菜单的高亮元素就应该是它的父亲
+        route.meta = {
+          ...route.meta,
+          activeKey: parent?.redirect || parent?.path,
+        }
+      }
+      routes.push(route)
+    })
+    resolve(routes)
   })
-  return routes
 }
 
 const generateMenus = (routes: any[], level = 1) => {
@@ -119,7 +125,7 @@ export const useUser = defineStore<
         this.userInfo = rest
         // this.menus = menus
         this.menus = [...generateMenus(constantRoutes), ...menus]
-        this.accessRoutes = generateRoutes(menus)
+        this.accessRoutes = await generateRoutes(menus)
         return { userInfo: rest, accessRoutes: this.accessRoutes }
       }
       return { userInfo: null, accessRoutes: [] }
