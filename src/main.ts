@@ -4,6 +4,7 @@ import App from './App.vue'
 import './permission'
 import router from './router'
 import pinia from './pinia'
+import { registerDirectives } from '@/directives'
 
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
@@ -16,6 +17,8 @@ app.config.globalProperties.$Icons = ElementPlusIconsVue
 // }
 
 app.use(pinia).use(router)
+
+registerDirectives(app)
 
 app.config.errorHandler = (err) => {
   console.error(err)

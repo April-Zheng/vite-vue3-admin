@@ -1,8 +1,8 @@
 import router from '@/router'
 import { useUser } from '@/pinia/modules'
 import { RouteRecordRaw } from 'vue-router'
-import { ElLoading } from 'element-plus'
-
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 /**
  * @see https://router.vuejs.org/zh/guide/advanced/navigation-guards.html
  * @see https://router.vuejs.org/zh/guide/advanced/dynamic-routing.html
@@ -11,13 +11,11 @@ import { ElLoading } from 'element-plus'
  * 2、在路由守卫中动态添加路由
  */
 
-let loadingInstance: any
-
 const WhiteList = ['login']
 
 router.beforeEach(async (to) => {
   const userStore = useUser()
-  loadingInstance = ElLoading.service()
+  NProgress.start()
   if (WhiteList.includes(to?.name as string)) {
     return true
   }
@@ -36,6 +34,9 @@ router.beforeEach(async (to) => {
   }
 })
 
-router.afterEach(() => {
-  loadingInstance?.close()
+router.afterEach((to) => {
+  NProgress?.done()
+  if (to?.meta?.title) {
+    document.title = to?.meta?.title as string
+  }
 })

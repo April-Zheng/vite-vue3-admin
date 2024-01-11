@@ -26,4 +26,5 @@ export interface IUserInfo {
   name: string
   avatar: string
   menus: IMenuItem[]
+  roles: string[]
 }

@@ -88,6 +88,7 @@ export interface IUserStoreAction {
     Pick<IUserStoreState, 'userInfo' | 'accessRoutes'>
   >
   changeCollapse: (v: boolean) => void
+  changeUserRoles: () => void
 }
 
 export const useUser = defineStore<
@@ -129,6 +130,15 @@ export const useUser = defineStore<
         return { userInfo: rest, accessRoutes: this.accessRoutes }
       }
       return { userInfo: null, accessRoutes: [] }
+    },
+
+    async changeUserRoles() {
+      if (this.token) {
+        const isAdmin = this.userInfo?.roles?.includes('admin')
+        isAdmin && this.setToken(this.token?.replace('admin', 'visitor'))
+        !isAdmin && this.setToken(this.token?.replace('visitor', 'admin'))
+        await this.fetchUserInfo()
+      }
     },
 
     changeCollapse(v: boolean) {

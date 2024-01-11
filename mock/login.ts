@@ -90,6 +90,27 @@ const menus: IMenuItem[] = [
       },
     ],
   },
+  {
+    name: '自定义指令',
+    path: '/directives',
+    redirect: '/directives/throttle',
+    icon: 'Compass',
+    level: 1,
+    children: [
+      {
+        name: '节流指令',
+        path: '/directives/throttle',
+        icon: '',
+        level: 2,
+      },
+      {
+        name: '按钮权限指令',
+        path: '/directives/permission',
+        icon: '',
+        level: 2,
+      },
+    ],
+  },
 ]
 
 const VistitorMenus = menus.filter((item) => item.name !== '系统管理')
