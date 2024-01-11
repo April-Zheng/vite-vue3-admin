@@ -6,5 +6,6 @@
 export {}
 declare global {
   const ElMessage: typeof import('element-plus/es')['ElMessage']
+  const ElTable: typeof import('element-plus/es')['ElTable']
   const IconEpSetting: typeof import('~icons/ep/setting')['default']
 }

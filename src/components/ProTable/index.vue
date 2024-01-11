@@ -5,8 +5,15 @@
     @submit="onSearch"
     @reset="onReset"
   ></query-filter>
-  <el-table v-loading="loading" :data="tableData">
-    <template v-for="column in columns">
+  <el-table
+    ref="tableRef"
+    v-loading="loading"
+    :data="tableData"
+    :row-key="rowKey"
+    :current-row-key="rowKey"
+    v-bind="$attrs"
+  >
+    <template v-for="column in columns" :key="column.prop">
       <el-table-column v-bind="column" v-if="column.slot">
         <template #default="scope">
           <slot :name="column.slot" :row="scope.row" :column="column"></slot>
@@ -39,18 +46,19 @@
 
 <script setup lang="ts" generic="T">
 import { IResponse } from '@/api/type'
-import { watch, ref, onMounted, computed } from 'vue'
+import { watch, ref, onMounted, computed, nextTick, defineExpose } from 'vue'
 import QueryFilter from '../QueryFilter/index.vue'
 import { IField } from '../ProForm/type'
+import type { ElTable, ElTableColumn } from 'element-plus'
 
-export interface ITableColumn extends Partial<IField> {
+interface ITableColumn extends Partial<IField> {
   prop: string
   label: string
   hideInSearch?: boolean
   [x: string]: any
 }
 
-export interface IPageConfig {
+interface IPageConfig {
   background: boolean
   pageSizes: number[]
   layout: string
@@ -61,6 +69,7 @@ const props = withDefaults(
     columns: ITableColumn[]
     pageConfig?: IPageConfig | false
     searchable?: boolean
+    rowKey?: string
   }>(),
   {
     searchable: true,
@@ -75,6 +84,7 @@ const props = withDefaults(
 
 const emit = defineEmits(['request'])
 
+const tableRef = ref({})
 const tableData = ref<T[]>([])
 const loading = ref(false)
 const total = ref(0)
@@ -150,6 +160,28 @@ watch(
 
 onMounted(() => {
   fetchList()
+})
+
+const dispatchElTableEvent = (key: string, ...args: any) => {
+  if (Reflect.has(tableRef.value, key)) {
+    const fn = Reflect.get(tableRef.value, key)
+    nextTick(() => {
+      fn(...args)
+    })?.catch?.((e) => {
+      console.log(e)
+    })
+  } else {
+    console.warn(`el-table 没有${key}事件，请检查是否拼写错误`)
+  }
+}
+
+/**
+ * TODO: tableRef.value exponse的时候一直是undefined，tableData也是空
+ */
+defineExpose({
+  ...(tableRef.value || {}),
+  dispatchElTableEvent,
+  tableData: tableData.value,
 })
 </script>
 <style scoped lang="scss">

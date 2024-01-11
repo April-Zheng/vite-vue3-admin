@@ -1,5 +1,5 @@
 <template>
-  <div>当前角色:{{ userInfo.roles?.join('，') }}</div>
+  <div>当前角色:{{ userInfo?.roles?.join('，') }}</div>
   <el-button type="primary" class="mt20" @click="changeRoles">
     切换角色
   </el-button>
