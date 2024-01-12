@@ -25,7 +25,7 @@
             check-on-click-node
             :expand-on-click-node="false"
             :default-checked-keys="checkedValues"
-            @check.capture="onChange"
+            @check="onChange"
           ></el-tree>
         </template>
         <template #reference>
@@ -78,6 +78,7 @@ const isCheckedAll = computed<boolean>(() => {
   return allKeys === computedColumns?.value?.count
 })
 
+// TODO: 触发了折叠展开
 const onChange = (
   _: any,
   {

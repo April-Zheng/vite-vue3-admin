@@ -91,18 +91,3 @@ _这是第二天_
 看文档设置 expand-on-click-node 为 false 没生效
 
 去掉了 check-on-click-node 点击勾选框还是会触发
-
-最终用了.capture 修饰符解决
-
-```vue
-<el-tree
-  ref="treeRef"
-  :data="computedColumns?.columns"
-  node-key="label"
-  show-checkbox
-  check-on-click-node
-  :expand-on-click-node="false"
-  :default-checked-keys="checkedValues"
-  @check.capture="onChange"
-></el-tree>
-```
