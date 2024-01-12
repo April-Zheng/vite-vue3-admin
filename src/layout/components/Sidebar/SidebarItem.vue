@@ -24,7 +24,7 @@
 import { IMenuItem } from '@/api/type'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import Icon from './Icon.vue'
+import Icon from '@/components/Icon/index.vue'
 
 const props = defineProps<{ menu: IMenuItem }>()
 

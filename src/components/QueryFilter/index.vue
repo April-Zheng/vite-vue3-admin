@@ -33,8 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { ProForm, ProFormSubmitter } from '@/components'
-import Icon from '@/layout/components/Sidebar/Icon.vue'
+import { ProForm, ProFormSubmitter, Icon } from '@/components'
 import { IFormProps, IFormAction, IFormExpose } from '../ProForm/type'
 import { withDefaults, computed, ref } from 'vue'
 

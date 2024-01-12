@@ -5,32 +5,71 @@
     @submit="onSearch"
     @reset="onReset"
   ></query-filter>
+  <div class="toolbar" v-if="toolbar || headerTitle">
+    <div class="toolbar__left">
+      <slot name="title">
+        <div class="toolbar__title">
+          {{ headerTitle }}
+          <el-tooltip :content="tooltip">
+            <Icon
+              v-if="tooltip"
+              color="#999"
+              :style="{ marginLeft: '5px' }"
+              icon="QuestionFilled"
+            />
+          </el-tooltip>
+        </div>
+      </slot>
+    </div>
+    <el-space class="toolbar__right" alignment="center" :size="12">
+      <slot name="actions"></slot>
+      <el-tooltip content="刷新">
+        <Icon
+          v-if="toolbar?.refresh"
+          class="pointer refresh"
+          icon="RefreshRight"
+          @click="fetchList"
+        />
+      </el-tooltip>
+      <column-setting
+        v-if="toolbar?.setting"
+        :columns="columns"
+        @change="onColumnsChange"
+      ></column-setting>
+    </el-space>
+  </div>
+  <div v-if="rowSelection?.alwaysShowAlert" class="alert">
+    <div class="alert__content">
+      {{
+        rowSelection?.infoRender
+          ? rowSelection?.infoRender?.(selectedRows)
+          : `已选择${selectedRows?.length}项目`
+      }}
+    </div>
+    <el-space class="alert__actions">
+      <slot name="alertActions"></slot>
+      <el-button class="clear" link @click="clearSelections">清空</el-button>
+    </el-space>
+  </div>
   <el-table
     ref="tableRef"
     v-loading="loading"
     :data="tableData"
     :row-key="rowKey"
     :current-row-key="rowKey"
+    @selection-change="onSelectionChange"
     v-bind="$attrs"
   >
-    <template v-for="column in columns" :key="column.prop">
-      <el-table-column v-bind="column" v-if="column.slot">
-        <template #default="scope">
-          <slot :name="column.slot" :row="scope.row" :column="column"></slot>
-        </template>
-      </el-table-column>
-      <component
-        v-else-if="column.component"
-        :is="column.component"
-        :config="column"
-      ></component>
-      <el-table-column
-        v-else
-        v-bind="column"
-        align="center"
-        :show-overflow-tooltip="true"
-      ></el-table-column>
-    </template>
+    <pro-table-column
+      v-for="column in computedColumns"
+      v-show="!column.hidden || !column.hideInTable"
+      :key="column.prop"
+      :column="column"
+    >
+      <template v-for="(_, slot) in $slots" #[slot]="scope">
+        <slot :name="slot" v-bind="scope" />
+      </template>
+    </pro-table-column>
   </el-table>
   <el-pagination
     v-if="pageConfig"
@@ -46,48 +85,66 @@
 
 <script setup lang="ts" generic="T">
 import { IResponse } from '@/api/type'
-import { watch, ref, onMounted, computed, nextTick, defineExpose } from 'vue'
-import QueryFilter from '../QueryFilter/index.vue'
-import { IField } from '../ProForm/type'
-import type { ElTable, ElTableColumn } from 'element-plus'
+import {
+  watch,
+  ref,
+  onMounted,
+  computed,
+  nextTick,
+  defineExpose,
+  defineAsyncComponent,
+} from 'vue'
+import type { ElTable } from 'element-plus'
+import ProTableColumn from './ProTableColumn.vue'
+import { getShowColumns } from './helper'
+import type { ITableColumn, IProTableProps } from './type'
+import type { IField } from '../ProForm/type'
 
-interface ITableColumn extends Partial<IField> {
-  prop: string
-  label: string
-  hideInSearch?: boolean
-  [x: string]: any
-}
-
-interface IPageConfig {
-  background: boolean
-  pageSizes: number[]
-  layout: string
-}
-
-const props = withDefaults(
-  defineProps<{
-    columns: ITableColumn[]
-    pageConfig?: IPageConfig | false
-    searchable?: boolean
-    rowKey?: string
-  }>(),
-  {
-    searchable: true,
-    pageConfig: {
-      // @ts-ignore
-      background: true,
-      pageSizes: [10, 20, 50, 100],
-      layout: 'total, sizes, prev, pager, next, jumper',
-    },
-  }
+const ColumnSetting = defineAsyncComponent(() => import('./ColumnSetting.vue'))
+const QueryFilter = defineAsyncComponent(
+  () => import('../QueryFilter/index.vue')
 )
 
-const emit = defineEmits(['request'])
+const props = withDefaults(defineProps<IProTableProps<T>>(), {
+  searchable: true,
+  pageConfig: {
+    // @ts-ignore
+    background: true,
+    pageSizes: [10, 20, 50, 100],
+    layout: 'total, sizes, prev, pager, next, jumper',
+  },
+})
 
-const tableRef = ref({})
+const emit = defineEmits(['request', 'columnSettingChange', 'selectionChange'])
+
+const tableRef = ref<InstanceType<typeof ElTable>>()
 const tableData = ref<T[]>([])
 const loading = ref(false)
 const total = ref(0)
+
+const computedColumns = computed({
+  get: () => {
+    return getShowColumns(props.columns)
+  },
+  set: (val) => val,
+})
+
+const onColumnsChange = (columnKeys: string[], rows: ITableColumn[]) => {
+  computedColumns.value = rows
+  emit('columnSettingChange', columnKeys, rows)
+}
+
+const selectedRows = ref([])
+
+const onSelectionChange = (rows: T[]) => {
+  // @ts-ignore
+  selectedRows.value = rows
+  emit('selectionChange', rows)
+}
+
+const clearSelections = () => {
+  tableRef.value?.clearSelection?.()
+}
 
 const initialParams = props.pageConfig
   ? {
@@ -163,6 +220,10 @@ onMounted(() => {
 })
 
 const dispatchElTableEvent = (key: string, ...args: any) => {
+  if (!tableRef.value) {
+    console.warn(`没有tableRef实例`)
+    return
+  }
   if (Reflect.has(tableRef.value, key)) {
     const fn = Reflect.get(tableRef.value, key)
     nextTick(() => {
@@ -182,6 +243,7 @@ defineExpose({
   ...(tableRef.value || {}),
   dispatchElTableEvent,
   tableData: tableData.value,
+  getSelectionRows: () => tableRef?.value?.getSelectionRows?.(),
 })
 </script>
 <style scoped lang="scss">
@@ -189,5 +251,44 @@ defineExpose({
   display: flex;
   align-items: center;
   justify-content: flex-end;
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px 10px 0;
+  &__right {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  &__title {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    color: rgba(42, 46, 54, 0.88);
+    font-weight: 500;
+    font-size: 16px;
+  }
+}
+
+.alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  background-color: rgba(42, 46, 54, 0.02);
+  padding: 8px 16px;
+  &__content {
+    flex: 1;
+    color: rgba(42, 46, 54, 0.75);
+    font-size: 13px;
+  }
+  &__actions {
+    .clear {
+      color: var(--el-color-primary);
+    }
+  }
 }
 </style>

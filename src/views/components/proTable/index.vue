@@ -2,14 +2,36 @@
   <pro-table
     ref="tableRef"
     row-key="inspectionId"
+    header-title="表格标题"
+    tooltip="这是表格描述信息这是表格描述信息这是表格描述信息"
     :columns="columns"
     :stripe="true"
+    :toolbar="{
+      refresh: true,
+      setting: true,
+    }"
+    :rowSelection="{
+      alwaysShowAlert: true,
+    }"
     @request="request"
     @selection-change="handleTableEvent"
     @sort-change="handleTableEvent"
   >
+    <template #actions>
+      <el-button type="primary">新建</el-button>
+    </template>
+    <template #alertActions>
+      <el-button type="primary" @click="batchDelete">批量删除</el-button>
+      <el-button type="primary">导出</el-button>
+    </template>
     <template #inspectionType="{ row }">
       {{ row?.inspectionType === 'ELEVATOR' ? '升降梯' : '扶梯' }}
+    </template>
+    <template #inspectionType2="{ row }">
+      {{ row?.inspectionType === 'ELEVATOR' ? '升降梯' : '扶梯' }}
+    </template>
+    <template #opreation>
+      <el-button>编辑</el-button>
     </template>
   </pro-table>
 </template>
@@ -44,11 +66,34 @@ const columns = ref<ITableColumn[]>([
     hideInSearch: true,
     sortable: true,
   },
+  // @ts-ignore
   {
-    prop: 'eleContractNo',
-    label: '产品合同号',
-    type: 'input',
-  },
+    label: '产品合同',
+    children: [
+      {
+        prop: 'eleContractNo',
+        label: '产品合同号2',
+        type: 'input',
+      },
+      {
+        prop: 'mntContractNo',
+        label: '保养合同号2',
+        type: 'input',
+        hideInTable: true,
+      },
+      {
+        prop: 'customerName',
+        label: '客户名称2',
+        type: 'input',
+      },
+      {
+        prop: 'inspectionType',
+        label: '作业类型2',
+        slot: 'inspectionType2',
+        type: 'select',
+      },
+    ],
+  } as ITableColumn,
   {
     prop: 'mntContractNo',
     label: '保养合同号',
@@ -79,6 +124,7 @@ const columns = ref<ITableColumn[]>([
     prop: 'inspectionDate',
     label: '巡视时间',
     type: 'datePicker',
+    hideInTable: true,
   },
   {
     prop: 'orderCode',
@@ -92,6 +138,10 @@ const columns = ref<ITableColumn[]>([
         'COMPLETE',
       ].map((item) => ({ label: item, value: item })),
     },
+  },
+  {
+    label: '操作',
+    slot: 'opreation',
   },
 ])
 
@@ -124,20 +174,24 @@ const request = async (params: any, cb: (v: any) => void) => {
 }
 
 const handleTableEvent = (val: any[]) => {
-  console.log(val)
+  console.log(val, '=========')
+}
+
+const batchDelete = () => {
+  console.log('batchDelete===>', tableRef.value?.getSelectionRows())
 }
 
 const handleRefEvent = (data: any[]) => {
-  console.log(data)
+  console.log(data, tableRef.value)
   // tableRef.value?.dispatchElTableEvent('toggleAllSelection')
-  tableRef.value?.dispatchElTableEvent('sort', 'inspectionId', 'ascending')
+  // tableRef.value?.dispatchElTableEvent('sort', 'inspectionId', 'ascending')
   tableRef.value?.dispatchElTableEvent('toggleRowSelection', data?.[0], true)
   tableRef.value?.dispatchElTableEvent('toggleRowSelection', staticRow, true)
 }
 
 onMounted(() => {
-  // handleRefEvent(tableData.value)
   nextTick(() => {
+    // handleRefEvent(tableData.value)
     console.log(tableRef.value)
   })
 })

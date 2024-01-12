@@ -79,3 +79,30 @@ const dispatchElTableEvent = (key: string, ...args: any) => {
 ## table 渲染 数据乱序问题
 
 由上面的问题发现 table 的渲染顺序是乱的，加上了 row-key 和 current-row-key 都没有按照 mock 接口返回的数据顺序渲染
+
+_这是第二天_
+
+突然发现数据顺序正常了
+
+## 用 el-tree 封装动态列设置
+
+设置了 check-on-click-node 点击文本也能选中，但是此时触发了折叠展开，
+
+看文档设置 expand-on-click-node 为 false 没生效
+
+去掉了 check-on-click-node 点击勾选框还是会触发
+
+最终用了.capture 修饰符解决
+
+```vue
+<el-tree
+  ref="treeRef"
+  :data="computedColumns?.columns"
+  node-key="label"
+  show-checkbox
+  check-on-click-node
+  :expand-on-click-node="false"
+  :default-checked-keys="checkedValues"
+  @check.capture="onChange"
+></el-tree>
+```

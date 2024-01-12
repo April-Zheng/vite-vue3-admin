@@ -45,8 +45,7 @@ but，row 配置了 gutter 之后 col 的 hidden 属性就失效，不知道为�
 </template>
 
 <script setup lang="ts">
-import { ProForm, ProFormSubmitter } from '@/components'
-import Icon from '@/layout/components/Sidebar/Icon.vue'
+import { ProForm, ProFormSubmitter, Icon } from '@/components'
 import { IFormProps, IFormEmits, IFormExpose } from '../ProForm/type'
 import { withDefaults, computed, ref } from 'vue'
 

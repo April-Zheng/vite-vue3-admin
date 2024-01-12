@@ -30,7 +30,7 @@ import { useUser } from '@/pinia/modules'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import Icon from '@/layout/components/Sidebar/Icon.vue'
+import { Icon } from '@/components'
 import Breadcrumbs from './Breadcrumbs.vue'
 
 const router = useRouter()
