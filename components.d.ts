@@ -53,6 +53,7 @@ declare module 'vue' {
     ErrorBoundary: typeof import('./src/components/ErrorBoundary/index.vue')['default']
     ErrorPage: typeof import('./src/components/ErrorPage/index.vue')['default']
     Field: typeof import('./src/components/ProForm/Field.vue')['default']
+    FieldEditableProTable: typeof import('./src/components/EditableProTable/FieldEditableProTable.vue')['default']
     FormItem: typeof import('./src/components/ProForm/FormItem.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Icon: typeof import('./src/components/Icon/index.vue')['default']

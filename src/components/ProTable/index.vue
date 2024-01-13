@@ -62,9 +62,9 @@
   >
     <pro-table-column
       v-for="column in computedColumns"
-      v-show="!column.hidden || !column.hideInTable"
       :key="column.prop"
       :column="column"
+      :rules="rules"
     >
       <template v-for="(_, slot) in $slots" #[slot]="scope">
         <slot :name="slot" v-bind="scope" />
@@ -98,7 +98,7 @@ import type { ElTable } from 'element-plus'
 import ProTableColumn from './ProTableColumn.vue'
 import { getShowColumns } from './helper'
 import type { ITableColumn, IProTableProps } from './type'
-import type { IField } from '../ProForm/type'
+import type { IField } from '../ProForm/type.ts'
 
 const ColumnSetting = defineAsyncComponent(() => import('./ColumnSetting.vue'))
 const QueryFilter = defineAsyncComponent(
@@ -115,12 +115,25 @@ const props = withDefaults(defineProps<IProTableProps<T>>(), {
   },
 })
 
-const emit = defineEmits(['request', 'columnSettingChange', 'selectionChange'])
+const emit = defineEmits([
+  'request',
+  'columnSettingChange',
+  'selectionChange',
+  'dataChange',
+])
 
 const tableRef = ref<InstanceType<typeof ElTable>>()
-const tableData = ref<T[]>([])
+const tableData = ref<T[]>(props.data || [])
 const loading = ref(false)
 const total = ref(0)
+
+watch(
+  () => props.data,
+  (values) => {
+    // @ts-ignore
+    tableData.value = values
+  }
+)
 
 const computedColumns = computed({
   get: () => {
@@ -156,27 +169,35 @@ const initialParams = props.pageConfig
 let params = ref<Record<string, any>>(initialParams)
 
 const fields = computed(() => {
-  return props.columns.filter(
-    (item) => !item.hideInSearch && item.prop
-  ) as IField[]
+  return [...props.columns]
+    .filter((item) => !item.hideInSearch && item.prop)
+    .map((item) => {
+      item.component = item.formItemComponent
+      return item
+    }) as IField[]
 })
 
 const fetchList = async () => {
-  loading.value = true
-  emit(
-    'request',
-    params.value,
-    (resp: IResponse<{ list: T[]; total: number }>) => {
-      if (resp.code === 200) {
-        // @ts-ignore
-        tableData.value = resp.data?.list || []
-        total.value = resp?.data?.total
-        loading.value = false
-      } else {
-        loading.value = false
+  try {
+    loading.value = true
+    emit(
+      'request',
+      params.value,
+      (resp: IResponse<{ list: T[]; total: number }>) => {
+        if (resp.code === 200) {
+          // @ts-ignore
+          tableData.value = resp.data?.list || []
+          total.value = resp?.data?.total
+          loading.value = false
+          emit('dataChange', tableData.value)
+        } else {
+          loading.value = false
+        }
       }
-    }
-  )
+    )
+  } finally {
+    loading.value = false
+  }
 }
 
 const handleSizeChange = (pageSize: number) => {
@@ -243,6 +264,7 @@ defineExpose({
   ...(tableRef.value || {}),
   dispatchElTableEvent,
   tableData: tableData.value,
+  getTableData: () => tableData.value,
   getSelectionRows: () => tableRef?.value?.getSelectionRows?.(),
 })
 </script>

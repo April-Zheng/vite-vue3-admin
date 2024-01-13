@@ -77,6 +77,12 @@ const menus: IMenuItem[] = [
         level: 2,
       },
       {
+        name: 'editableProTable',
+        path: '/components/editableProTable',
+        icon: '',
+        level: 2,
+      },
+      {
         name: 'ProForm表单组件',
         path: '/components/proForm',
         icon: '',

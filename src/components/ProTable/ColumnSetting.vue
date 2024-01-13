@@ -11,7 +11,7 @@
           <div class="column-setting__buttons">
             <el-checkbox
               :indeterminate="!isCheckedAll"
-              v-model="isCheckedAll"
+              :checked="isCheckedAll"
               @change="toggleSelectAll"
               >全选</el-checkbox
             >

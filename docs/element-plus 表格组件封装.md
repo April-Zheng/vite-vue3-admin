@@ -260,3 +260,99 @@ const request = async (params, cb) => {
 ## 效果
 
 ![Alt text](image-2.png)
+
+# 支持多级表头
+
+其实就是递归 el-table-column 和 slots 嵌套的问题
+
+重新封装一下 table-column，如果是多级表头的话就递归一下
+
+```vue
+<!-- ProTableColumn.vue -->
+<template v-if="column.children && column.children.length > 0">
+  <pro-table-column
+    v-for="(child, index) in column.children"
+    :key="`pro-table-column__${child.prop || child.label || index}`"
+    :column="child"
+  >
+    <template v-for="(_, slot) in $slots" :key="slot" #[slot]="slotScope">
+      <slot :name="slot" v-bind="slotScope" />
+    </template>
+  </pro-table-column>
+</template>
+```
+
+```vue
+<!-- ProTable.vue -->
+<el-table
+  ref="tableRef"
+  v-loading="loading"
+  :data="tableData"
+  :row-key="rowKey"
+  :current-row-key="rowKey"
+  @selection-change="onSelectionChange"
+  v-bind="$attrs"
+>
+  <pro-table-column
+    v-for="column in computedColumns"
+    v-show="!column.hidden || !column.hideInTable"
+    :key="column.prop"
+    :column="column"
+  >
+    <template v-for="(_, slot) in $slots" #[slot]="scope">
+      <slot :name="slot" v-bind="scope" />
+    </template>
+  </pro-table-column>
+</el-table>
+```
+
+## 效果
+
+![Alt text](image-3.png)
+
+# 新增支持行内编辑和表单校验
+
+修改一下 ProTableColumn 组件，如果是 edit 状态就返回一个 form-item
+
+然后二次封装一下 pro-table，支持一下 v-model 指令
+
+需要注意的是 form-item 的 prop 是 name.index.prop，在 form-item 绑定 prop 时 和 validateFields 时要一致
+
+```vue
+<pro-form-item
+  v-if="
+    scope.row.isEdit &&
+    ('editable' in column ? column?.editable : true) &&
+    column.prop
+  "
+  :field="omit(column, ['prop', 'label'])"
+  label=""
+  :rules="rules?.[column.prop]"
+  :prop="`${formItem?.prop || 'tableData'}.${scope.$index}.${column.prop}`"
+  :component="column.formItemComponent || column.component"
+  v-model="scope.row[column.prop]"
+></pro-form-item>
+```
+
+自定义组件触发 form-item 的 规则校验，需要通过 useFormItem hook
+
+获取到 formItem 实例，在 modelValue 修改的时候调用 formItem?.validate('change')
+
+```ts
+import { useFormItem } from 'element-plus'
+
+const { formItem, form } = useFormItem()
+
+emit('update:modelValue', unref(tableData) as T[])
+formItem?.validate('change', (isValid, errors) => {
+  console.log(isValid, errors)
+})
+formItem?.validate('blur')
+```
+
+## 效果
+
+![Alt text](image-4.png)
+
+学习到了～～
+el-form 的 [useFormItem hook](https://github.com/element-plus/element-plus/blob/dev/packages/components/form/src/form.vue) 通过 provide 和 inject 实现的

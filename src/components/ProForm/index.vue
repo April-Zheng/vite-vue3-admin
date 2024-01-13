@@ -5,21 +5,23 @@
     ref="formRef"
     v-bind="config"
   >
-    <template v-if="config?.inline">
-      <el-form-item
+    <slot
+      v-if="$slots.custom"
+      name="custom"
+      :formValues="formValues"
+      :formRef="formRef"
+    >
+    </slot>
+    <template v-else-if="$attrs?.inline">
+      <form-item
         v-for="field in fields"
-        v-bind="field"
         :key="field.prop"
-        :name="field.prop"
+        :field="field"
+        :formValues="formValues"
+        :formRef="formRef"
+        v-model="formValues[field.prop]"
       >
-        <form-item
-          :field="field"
-          :formValues="formValues"
-          :formRef="formRef"
-          v-model="formValues[field.prop]"
-        >
-        </form-item>
-      </el-form-item>
+      </form-item>
       <el-form-item v-if="submitter || $slots.submitter">
         <slot name="submitter" :formValues="formValues" :formRef="formRef">
           <form-submitter
@@ -38,15 +40,13 @@
           v-bind="field.colSize || colSize"
           :hidden="field.hidden"
         >
-          <el-form-item v-bind="field" :name="field.prop">
-            <form-item
-              :field="field"
-              :formValues="formValues"
-              :formRef="formRef"
-              v-model="formValues[field.prop]"
-            >
-            </form-item>
-          </el-form-item>
+          <form-item
+            :field="field"
+            :formValues="formValues"
+            :formRef="formRef"
+            v-model="formValues[field.prop]"
+          >
+          </form-item>
         </el-col>
         <el-col
           v-if="submitter || $slots.submitter"

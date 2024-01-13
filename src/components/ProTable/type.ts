@@ -1,4 +1,12 @@
+import { Component } from 'vue'
 import type { IField } from '../ProForm/type'
+import { FormRules } from 'element-plus'
+
+export const defaultPageConfig = {
+  background: true,
+  pageSizes: [10, 20, 50, 100],
+  layout: 'total, sizes, prev, pager, next, jumper',
+}
 
 export interface ITableColumn extends Partial<IField> {
   label: string
@@ -6,7 +14,10 @@ export interface ITableColumn extends Partial<IField> {
   hideInSearch?: boolean
   // 不在table列中显示
   hideInTable?: boolean
+  // 是否可以被编辑表格编辑
+  editable?: boolean
   children?: ITableColumn[]
+  formItemComponent?: Component
   [x: string]: any
 }
 
@@ -31,4 +42,6 @@ export interface IProTableProps<T> {
     alwaysShowAlert?: boolean
     infoRender?: (rows: T[]) => string
   }
+  rules?: FormRules
+  data?: T[]
 }

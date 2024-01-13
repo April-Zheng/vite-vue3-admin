@@ -30,14 +30,15 @@
     <template #inspectionType2="{ row }">
       {{ row?.inspectionType === 'ELEVATOR' ? '升降梯' : '扶梯' }}
     </template>
-    <template #opreation>
+    <template #operation>
       <el-button>编辑</el-button>
     </template>
   </pro-table>
 </template>
 
 <script setup lang="ts">
-import { ITableColumn, ProTable } from '@/components'
+import type { ITableColumn } from '@/components/ProTable/type'
+import ProTable from '@/components/ProTable/index.vue'
 import { getTableList } from '@/api/components'
 import { ref, onMounted, nextTick } from 'vue'
 import { TableColumnCtx } from 'element-plus'
@@ -65,6 +66,7 @@ const columns = ref<ITableColumn[]>([
     label: '工单ID',
     hideInSearch: true,
     sortable: true,
+    type: 'input',
   },
   // @ts-ignore
   {
@@ -91,6 +93,7 @@ const columns = ref<ITableColumn[]>([
         label: '作业类型2',
         slot: 'inspectionType2',
         type: 'select',
+        editable: false,
       },
     ],
   } as ITableColumn,
@@ -141,7 +144,7 @@ const columns = ref<ITableColumn[]>([
   },
   {
     label: '操作',
-    slot: 'opreation',
+    slot: 'operation',
   },
 ])
 
