@@ -22,10 +22,16 @@
             :data="computedColumns?.columns"
             node-key="label"
             show-checkbox
-            check-on-click-node
+            :check-on-click-node="true"
+            draggable
+            :allow-drop="allowDrop"
             :expand-on-click-node="false"
             :default-checked-keys="checkedValues"
+            :default-expanded-keys="expandedKeys"
+            @node-expand="(val) => onNodeExpandChange(val, true)"
+            @node-collapse="(val) => onNodeExpandChange(val, false)"
             @check="onChange"
+            @node-drop="onDrop"
           ></el-tree>
         </template>
         <template #reference>
@@ -45,7 +51,10 @@ import {
   getAllCanCheckColumns,
   getCheckedColumns,
   IDefaultCheckedKeys,
+  getSortableColumns,
 } from './helper'
+import { NodeDropType } from 'element-plus/es/components/tree/src/tree.type.mjs'
+import Node from 'element-plus/es/components/tree/src/model/node.mjs'
 
 const props = defineProps<{
   columns: ITableColumn[]
@@ -53,11 +62,14 @@ const props = defineProps<{
 
 const emit = defineEmits(['change'])
 
-const computedColumns = computed<{ columns: ITableColumn[]; count: number }>(
-  () => {
-    return getAllCanCheckColumns(props.columns)
-  }
-)
+const newColumns = ref<ITableColumn[]>(props.columns)
+
+const computedColumns = computed<{ columns: ITableColumn[]; count: number }>({
+  get: () => {
+    return getAllCanCheckColumns(newColumns.value)
+  },
+  set: (val) => val,
+})
 
 const getDefaultValues = (): IDefaultCheckedKeys => {
   return getCheckedColumnKeys(computedColumns.value?.columns)
@@ -67,8 +79,10 @@ const treeRef = ref()
 const checkedValues = ref<string[]>(getDefaultValues()?.checkedKeys)
 const _halfCheckedKeys = ref<string[]>(getDefaultValues()?.halfCheckedKeys)
 
+const expandedKeys = ref<string[]>([])
+
 const checkedColumns = computed<ITableColumn[]>(() => {
-  return getCheckedColumns(props.columns, [
+  return getCheckedColumns(newColumns.value, [
     ...unref(checkedValues),
     ...unref(_halfCheckedKeys),
   ])
@@ -102,6 +116,7 @@ const toggleSelectAll = (isCheckAll: boolean) => {
     emit('change', checkedValues.value, unref(checkedColumns))
   } else {
     checkedValues.value = []
+    _halfCheckedKeys.value = []
     emit('change', [], unref(checkedColumns))
   }
 }
@@ -111,6 +126,51 @@ const onReset = () => {
   _halfCheckedKeys.value = getDefaultValues()?.halfCheckedKeys
 
   emit('change', checkedValues.value, unref(checkedColumns))
+}
+
+const allowDrop = (draggingNode: Node, dropNode: Node, type: NodeDropType) => {
+  if (type === 'inner') return false
+  // 如果不是子节点，层级相同就可以拖拽，如果不是，则判断是在同一个父亲下
+  if (!draggingNode?.isLeaf) return dropNode.level === dropNode.level
+  if (draggingNode.isLeaf) {
+    return (
+      dropNode.level === dropNode.level &&
+      draggingNode?.parent?.id === dropNode.parent.id
+    )
+  }
+}
+
+const onDrop = (
+  draggingNode: Node,
+  dropNode: Node,
+  _dropType: NodeDropType,
+  ev: DragEvent
+) => {
+  ev.stopPropagation()
+  // FIXME: 解决拖拽触发取消选中问题
+  treeRef.value!.setCheckedKeys(checkedValues.value)
+  const parentKey =
+    draggingNode.level !== 1
+      ? draggingNode.store?.nodesMap?.[draggingNode.data.label]?.parent?.data
+          ?.label
+      : ''
+  // TODO: 数据处理 columns 排序
+  // @ts-ignore
+  newColumns.value = getSortableColumns(
+    newColumns.value,
+    draggingNode.label,
+    dropNode.label,
+    parentKey
+  )
+  emit('change', checkedValues.value, newColumns.value)
+}
+
+const onNodeExpandChange = (node: Node, isExpand: boolean) => {
+  if (isExpand) {
+    expandedKeys.value = [...expandedKeys.value, node.label]
+  } else {
+    expandedKeys.value = expandedKeys.value.filter((v) => v === node.label)
+  }
 }
 </script>
 <style scoped lang="scss">

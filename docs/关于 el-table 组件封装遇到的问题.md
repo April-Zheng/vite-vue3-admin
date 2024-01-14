@@ -90,4 +90,25 @@ _这是第二天_
 
 看文档设置 expand-on-click-node 为 false 没生效
 
-去掉了 check-on-click-node 点击勾选框还是会触发
+加上拖拽功能后，拖拽也会触发折叠展开
+
+只能通过控制 default-expanded-keys 来解决，需要额外的添加事件控制
+
+```vue
+<el-tree
+  ref="treeRef"
+  :data="computedColumns?.columns"
+  node-key="label"
+  show-checkbox
+  :check-on-click-node="true"
+  draggable
+  :allow-drop="allowDrop"
+  :expand-on-click-node="false"
+  :default-checked-keys="checkedValues"
+  :default-expanded-keys="expandedKeys"
+  @node-expand="(val) => onNodeExpandChange(val, true)"
+  @node-collapse="(val) => onNodeExpandChange(val, false)"
+  @check="onChange"
+  @node-drop="onDrop"
+></el-tree>
+```

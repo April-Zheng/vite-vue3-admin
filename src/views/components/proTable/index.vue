@@ -76,6 +76,19 @@ const columns = ref<ITableColumn[]>([
         prop: 'eleContractNo',
         label: '产品合同号2',
         type: 'input',
+        children: [
+          {
+            prop: 'mntContractNo',
+            label: '保养合同号3',
+            type: 'input',
+            hideInTable: true,
+          },
+          {
+            prop: 'customerName',
+            label: '客户名称3',
+            type: 'input',
+          },
+        ],
       },
       {
         prop: 'mntContractNo',

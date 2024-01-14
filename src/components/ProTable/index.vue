@@ -135,15 +135,10 @@ watch(
   }
 )
 
-const computedColumns = computed({
-  get: () => {
-    return getShowColumns(props.columns)
-  },
-  set: (val) => val,
-})
+const computedColumns = ref<ITableColumn[]>(getShowColumns(props.columns))
 
 const onColumnsChange = (columnKeys: string[], rows: ITableColumn[]) => {
-  computedColumns.value = rows
+  computedColumns.value = getShowColumns(rows)
   emit('columnSettingChange', columnKeys, rows)
 }
 

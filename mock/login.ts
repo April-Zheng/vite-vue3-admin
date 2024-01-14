@@ -77,7 +77,7 @@ const menus: IMenuItem[] = [
         level: 2,
       },
       {
-        name: 'editableProTable',
+        name: 'EditableProTable',
         path: '/components/editableProTable',
         icon: '',
         level: 2,
