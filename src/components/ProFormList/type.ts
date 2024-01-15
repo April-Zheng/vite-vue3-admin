@@ -1,5 +1,5 @@
 import { FormRules } from 'element-plus'
-import { IEditableProTableProps, IActionProps } from '../EditableProTable/type'
+import { IActionProps } from '../EditableProTable/type'
 import { IField } from '../ProForm/type'
 
 export interface IProFormListActionProps extends Omit<IActionProps, 'loading'> {
