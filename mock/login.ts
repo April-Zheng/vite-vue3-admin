@@ -89,6 +89,12 @@ const menus: IMenuItem[] = [
         level: 2,
       },
       {
+        name: 'ProFormList',
+        path: '/components/proFormList',
+        icon: '',
+        level: 2,
+      },
+      {
         name: 'QueryFilter查询表单',
         path: '/components/queryFilter',
         icon: '',

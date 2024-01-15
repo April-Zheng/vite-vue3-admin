@@ -5,14 +5,7 @@
     ref="formRef"
     v-bind="config"
   >
-    <slot
-      v-if="$slots.custom"
-      name="custom"
-      :formValues="formValues"
-      :formRef="formRef"
-    >
-    </slot>
-    <template v-else-if="$attrs?.inline">
+    <template v-if="config?.inline">
       <form-item
         v-for="field in fields"
         :key="field.prop"
@@ -129,6 +122,11 @@ defineExpose<IFormExpose<T>>({
   // @ts-ignore
   formValues: formValues.value,
   ...(formRef.value || {}),
+  validate: (...args) => formRef.value!.validate(...args),
+  validateField: (...args) => formRef.value!.validateField(...args),
+  resetFields: (...args) => formRef.value!.resetFields(...args),
+  scrollToField: (...args) => formRef.value!.scrollToField(...args),
+  clearValidate: (...args) => formRef.value!.clearValidate(...args),
 })
 </script>
 <style scoped lang="scss"></style>

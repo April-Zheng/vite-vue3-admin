@@ -9,7 +9,11 @@
     <field-editable-pro-table
       v-model="formData.tableData"
       v-bind="omit({ ...$attrs, ...$props }, ['modelValue'])"
-    ></field-editable-pro-table>
+    >
+      <template v-for="(_, slot) in $slots" #[slot]="scope">
+        <slot :name="slot" v-bind="scope" />
+      </template>
+    </field-editable-pro-table>
   </el-form>
 </template>
 

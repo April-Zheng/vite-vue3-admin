@@ -1,9 +1,11 @@
 import { IProTableProps, ITableColumn } from '../ProTable/type'
 import { ButtonProps, FormInstance } from 'element-plus'
 
-export type IActionProps = ButtonProps & { btnText: string }
+export type IActionProps = Partial<ButtonProps> & {
+  btnText?: string
+}
 
-export type ICreatorProps<T> = IActionProps & { defaultRecord: T }
+export type ICreatorProps<T> = IActionProps & { defaultRecord?: T }
 
 export interface IEditableProTableProps<T> {
   columns: ITableColumn[]

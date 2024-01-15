@@ -15,6 +15,9 @@ const EditableProTable = defineAsyncComponent(
 const FieldEditableProTable = defineAsyncComponent(
   () => import('./EditableProTable/FieldEditableProTable.vue')
 )
+const ProFormList = defineAsyncComponent(
+  () => import('./ProFormList/index.vue')
+)
 
 export {
   ProTable,
@@ -24,6 +27,7 @@ export {
   Icon,
   EditableProTable,
   FieldEditableProTable,
+  ProFormList,
 }
 
 export type { ITableColumn, IPageConfig } from './ProTable/type'

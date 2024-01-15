@@ -19,6 +19,7 @@ export interface IField extends Partial<Omit<FormItemProps, 'prop'>> {
   colSize?: ColSizeProps
   // 给查询表单的折叠展开用
   hidden?: boolean
+  tooltip?: string
   [x: string]: any
 }
 

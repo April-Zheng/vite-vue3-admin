@@ -10,8 +10,8 @@
     <template v-for="(_, slot) in $slots" #[slot]="scope">
       <slot :name="slot" v-bind="scope" />
     </template>
-    <template #editable_operation="{ $index, row }">
-      <slot name="operaions">
+    <template #editable_operation="{ $index, row, ...rest }">
+      <slot name="operaions" v-bind="{ $index, row, ...rest, ...actions }">
         <el-space>
           <template v-if="!row.isEdit">
             <el-button
@@ -168,12 +168,14 @@ const onEdit = (_: number, row: any) => {
   row.isEdit = true
 }
 
-defineExpose({
+const actions = {
   save: onSave,
   edit: onEdit,
   cancel: onCancel,
   add: onAdd,
-})
+}
+
+defineExpose(actions)
 </script>
 <style scoped lang="scss">
 .editable__form {
